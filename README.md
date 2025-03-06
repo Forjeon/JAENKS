@@ -13,6 +13,11 @@ More stuff here TODO
 	- [ ] Windows 10
 	- [ ] Windows 11
 
+## TODOs and Notes
+Art style is low poly and mix of 3D and 2D assets and VFX.
+
+Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
+
 ## Game Mechanics Progress
 
 ### Character
@@ -31,7 +36,7 @@ More stuff here TODO
 - [ ] Equipment slots and use
 	- [ ] vanity slots
 - [ ] Inventory
-	- [ ] Retention on death (
+	- [ ] Retention on death (scalable per player)
 - [ ] Outfit and cosmetics
 - [ ] Pets
 
@@ -65,10 +70,11 @@ More stuff here TODO
 	- f
 
 #### Mobility
+- [ ] Dash Burst Jump pack
+- [ ] Intrinsic gravity manipulator
+- [ ] Short-range directional teleporter
 - [ ] Two grapple + booster device (Spiderman / ODMG)
 - [ ] UnNewtonian telekinetic tether (Fling People and Things)
-- [ ] Short-range directional teleporter
-- [ ] Intrinsic gravity manipulator
 
 #### Offense
 - [ ] Gun
@@ -76,19 +82,89 @@ More stuff here TODO
 - [ ] Sword
 	- [ ] Laser sword
 
+#### Special
+- [ ] Mech summon (titan shifting)
+
+### Gameplay Loop
+- [ ] Enemy waves
+	- [ ] Continuous during journey (can be thinned out)
+	- [ ] Enemy type spawn rates variable during journey
+	- [ ] Enemy spawn locations variable during journey
+- [ ] Fishing
+	- [ ] Fish
+		- f
+	- [ ] Items (parts, upgrades, equipment, etc.)
+	- [ ] Rarities higher on journeys than at waypoints
+- [ ] Hidden goodies (collectibles, upgrades, ammo, buffs, healing, equipment, etc.)
+- [ ] Home base ship
+	- [ ] Base building
+	- [ ] Base repair
+	- [ ] Base upgrading
+	- [ ] Base customization
+- [ ] Journey levels
+	- [ ] Destructible props (buildings, ruins, certain other environnment elements)
+	- [ ] Lose state: home base destroyed or all players dead
+	- [ ] Procedural terrain generation
+		- [ ] Path shape and length
+		- [ ] Prop types
+			- [ ] Abandoned settlements
+			- [ ] Ancient ruins
+			- [ ] Floating rocks
+			- [ ] Trees
+		- [ ] Terrain types
+			- [ ] Hills
+			- [ ] Mountain
+			- [ ] Water
+	- [ ] Win state: home base and at least one player survive to reach end point
+- [ ] Mining
+	- f
+- [ ] Ragdoll physics
+- [ ] Repair of home base and vehicles using gathered, stolen, purchased materials or using recovered damaged parts (damage either destroys or breaks off parts)
+- [ ] Storyline (how? what?)
+- [ ] Teamwork combo powers
+	- f
+- [ ] Upgrades use common resources for all upgradable items (home base, equipment, vehicles, etc.)
+- [ ] Waypoint levels
+	- [ ] Crafting
+		- [ ] Equipment
+		- [ ] Cosmetics
+		- [ ] Upgrades
+	- [ ] Choice of journeys to next waypoints (backtracking allowed?)
+	- [ ] Mining / resource gathering and clearing
+	- [ ] Procedural settlement generation
+	- [ ] Shops
+
 ### Misc
 - [ ] Dragons (ridable, pet/NPC, offense, defense)
 - [ ] Gravity-altering areas
+- [ ] Projectile types and effects
+	- f
+- [ ] Shallow deflection of projectiles with projectiles, melee weapons, and defensive equipment
+
+### Movement
+- [ ] Air movement
+- [ ] Jumping
+- [ ] Parkour
+	- [ ] Climbing
+	- [ ] Wall jump
+	- [ ] Wall run
+- [ ] Running
+- [ ] Swimming
+- [ ] Walking
 
 ### Multiplayer
-- [ ] Dedicated server?
 - [ ] Drop in, drop out
 - [ ] Global voice chat
 - [ ] Lobby
-	- [ ] Steam friends only yes/no
+	- [ ] Game types
+		- [ ] PVE
+		- [ ] PVPVE (some players on enemy team; take control of deployed enemies, certain number of lives before enemy player considered dead)
+	- [ ] Host kick any guest
 	- [ ] LAN only yes/no
+	- [ ] Steam friends only yes/no
 - [ ] Text chat
-- [ ] P2P
+- [ ] P2P networking
+- [ ] Spectate when dead
 
 ### NPC
 - [ ] Friendliness score for each player
@@ -99,72 +175,36 @@ More stuff here TODO
 	- [ ] Offense
 
 ### Player
-- [ ] Difficulty level (scalable; health, damage, revives, etc.)
 - [ ] Aim assist (scalable)
+- [ ] Difficulty level (scalable; health, damage, revives, etc.)
+- [ ] Input configuration
+	- [ ] Controller
+		- [ ] Button mapping
+	- [ ] Hand tracking (VR only)
+		- [ ] Gesture mapping
+	- [ ] Keyboard and mouse
+		- [ ] Key mapping
 - [ ] Username
 
-### Vehicle
-- f
+### Vehicles
+- [ ] Destructible
+- [ ] Flying types
+	- f
+- [ ] Ground types
+	- f
+- [ ] Hovering types
+	- f
+- [ ] Purchasable
+- [ ] Repairable
+- [ ] Upgradable
 
-
-
-
-Deflecting projectiles with projectiles and melee/vambrace (not reflecting but parrying by slightly changing incoming angle or imparting a small amount of horizontal momentum) 
-
-Miming of slingshot / bow weapon
-
-Fun projectile types with different effects such as movement of player, etc.
-
-Base building
-
-Waves and then breaks for crafting and base building
-
-Water/underwater level
-
-Ragdoll physics (tune for maximum comedy, less creepy)
-
-Fishing
-
-First and third person like Roblox 
-
-Players can play as bad guys, even big ones (VR players especially can be the big guys
-
-Radar in HUD
-
-Hand tracking
-
-Item, equipment, cosmetics, upgrades, etc. shop comes between or during waves
-
-Flying moving base, objective is to make it from A to B
-
-Titan shifting
-
-Destructive terrain
-
-Procedural world
-
-Waves end at journey waypoints, which are safe and have shops, mining, etc.
-
-Waves come continually but can be thinned out (AI director?)
-
-3d and 2d art style
-
-For Mom: 
-surprises, Easter eggs, hidden areas
-teamwork powers and combos
-mining, farming, clearing things out (a la pacman, core keeper, Tetris)
-story line
-moving between screens/levels, each with their own set of mechanics and gameplay loops
-
-Comedy (for Mom as well)
-
-NPC interactions (friendships, hired hands and guns, etc.)
-
-Puzzles, escape room
-
-Vehicles like in Armoured Patrol (can be bought, built, repaired by players by hand)
-
-Call-down abilities like in Section 8 and Helldivers 2?
-
-Upgrades for home ship, vehicles, equipment, etc. using shared resource system like Lovers in a Dangerous Spacetime
+### Viewpoint
+- [ ] First person
+- [ ] HUD
+	- [ ] Equipment stats (ammo, cooldown, fuel, etc.)
+	- [ ] HP
+	- [ ] Minimap
+	- [ ] Radar
+- [ ] Sliding view between first and third person
+- [ ] Third person
 
