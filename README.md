@@ -176,6 +176,7 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 
 ### Player
 - [ ] Aim assist (scalable)
+- [ ] Chosen character
 - [ ] Difficulty level (scalable; health, damage, revives, etc.)
 - [ ] Input configuration
 	- [ ] Controller
