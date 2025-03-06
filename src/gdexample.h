@@ -10,6 +10,8 @@ namespace godot {
 
 		private:
 			double time_passed;
+			double amplitude;
+			double speed;
 
 		protected:
 			static void _bind_methods();
@@ -19,6 +21,10 @@ namespace godot {
 			~GDExample();
 
 			void _process(double delta) override;
+			double get_amplitude() const;
+			double get_speed() const;
+			void set_amplitude(const double p_amplitude);
+			void set_speed(const double p_speed);
 	};
 
 }
