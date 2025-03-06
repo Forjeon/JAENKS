@@ -6,7 +6,7 @@ using namespace godot;
 void GDExample::_bind_methods() {
 }
 
-GDExample:::GDExample() {
+GDExample::GDExample() {
 	time_passed = 0.0;
 }
 
