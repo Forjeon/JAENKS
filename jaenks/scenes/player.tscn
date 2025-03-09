@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://d1hc0wwrlgnw4"]
+
+[ext_resource type="Script" uid="uid://cmsrr0dusoa10" path="res://scripts/Player/player.gd" id="1_3vyb7"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_u8vuu"]
+friction = 0.9
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u8vuu"]
+size = Vector3(1, 2, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_3vyb7"]
+size = Vector3(1, 2, 0.5)
+
+[node name="Player" type="RigidBody3D"]
+physics_material_override = SubResource("PhysicsMaterial_u8vuu")
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, 1, 0)
+script = ExtResource("1_3vyb7")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("BoxShape3D_u8vuu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D"]
+mesh = SubResource("BoxMesh_3vyb7")
