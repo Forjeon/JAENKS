@@ -1,36 +1,41 @@
 extends RigidBody3D
 
 
-@export var move_speed: float;
-@export var look_sensitivity: float;
+@export var MOVE_SPEED: float = 10.0;
+@export var LOOK_SENSITIVITY: float = 0.005;
 
-var old_mouse_pos = Vector2();
+@onready var player_view = self.find_child("Camera3D");
+
+var view_rotation = Vector2();
 
 
-func _physics_process(delta):
+func _input(event) -> void:
+	# Look input
+	if event is InputEventMouseMotion:
+		view_rotation -= event.screen_relative * LOOK_SENSITIVITY;
+		view_rotation.y = clampf(view_rotation.y, -PI/2, PI/2);
+
+
+func _physics_process(delta) -> void:
 	process_input_move(delta);
-	process_input_look(delta);
+	process_look(delta);
 
 
-func process_input_look(delta):
-	var new_mouse_pos = get_viewport().get_mouse_position();
-	var yaw = self.old_mouse_pos.x - new_mouse_pos.x;
-	rotate_y(yaw * look_sensitivity * delta);
-	self.old_mouse_pos = new_mouse_pos;
-	print(get_viewport().get_mouse_position());
+func _ready() -> void:
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED);
 
 
-func process_input_move(delta):
-	var move_vec = Vector3();
-	
+func process_input_move(delta) -> void:
 	if Input.is_action_pressed("Move Forward"):
-		move_vec.z -= 1.0;
+		self.position -= self.transform.basis.z * MOVE_SPEED * delta;
 	if Input.is_action_pressed("Move Backward"):
-		move_vec.z += 1.0;
+		self.position += self.transform.basis.z * MOVE_SPEED * delta;
 	if Input.is_action_pressed("Move Left"):
-		move_vec.x -= 1.0;
+		self.position -= self.transform.basis.x * MOVE_SPEED * delta;
 	if Input.is_action_pressed("Move Right"):
-		move_vec.x += 1.0;
-	
-	#apply_central_force(move_vec.normalized() * move_force * delta);
-	set_axis_velocity(move_vec.normalized() * self.rotation * move_speed * delta);
+		self.position += self.transform.basis.x * MOVE_SPEED * delta;
+
+
+func process_look(delta) -> void:
+	rotation.y = view_rotation.x;
+	player_view.rotation.x = view_rotation.y;

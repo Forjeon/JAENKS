@@ -150,7 +150,7 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 	- [ ] Wall run
 - [ ] Running
 - [ ] Swimming
-- [ ] Walking
+- [x] Walking
 
 ### Multiplayer
 - [ ] Drop in, drop out
@@ -200,7 +200,7 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 - [ ] Upgradable
 
 ### Viewpoint
-- [ ] First person
+- [x] First person
 - [ ] HUD
 	- [ ] Equipment stats (ammo, cooldown, fuel, etc.)
 	- [ ] HP
