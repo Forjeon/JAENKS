@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="JAENKS"
-run/main_scene="uid://bt4b7t8h7s7lb"
+run/main_scene="uid://crlybpchih3om"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
