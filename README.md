@@ -178,6 +178,7 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 	- [ ] Host kick any guest
 	- [ ] LAN only yes/no
 	- [ ] Steam friends only yes/no
+	- [ ] Join from Steam overlay friends list 
 - [ ] Text chat
 - [ ] P2P networking
 - [ ] Spectate when dead
