@@ -134,6 +134,22 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 	- [ ] Procedural settlement generation
 	- [ ] Shops
 
+### Menus
+- [ ] Game menu
+- [ ] Host menu
+- [ ] Main menu
+- [ ] Options menu
+	- [ ] Controls settings
+		- [ ] Controller controls
+			- f
+		- [ ] Keyboard and mouse controls
+			- f
+		- [ ] VR controls
+			- f
+	- [ ] Graphics settings
+		- f
+	- f
+
 ### Misc
 - [ ] Dragons (ridable, pet/NPC, offense, defense)
 - [ ] Gravity-altering areas

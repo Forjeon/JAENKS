@@ -9,6 +9,7 @@ extends RigidBody3D
 var view_rotation = Vector2();
 
 
+# Godot functions
 func _input(event) -> void:
 	# Look input
 	if event is InputEventMouseMotion:
@@ -25,6 +26,7 @@ func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED);
 
 
+# Custom functions
 func process_input_move(delta) -> void:
 	if Input.is_action_pressed("Move Forward"):
 		self.position -= self.transform.basis.z * MOVE_SPEED * delta;
