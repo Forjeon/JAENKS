@@ -189,7 +189,7 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 	- [ ] Steam friends only yes/no
 	- [ ] Join from Steam overlay friends list 
 - [ ] Text chat
-- [ ] P2P networking
+- [x] P2P networking
 	- [ ] Distributed processing
 		- [ ] Distributed physics
 		- [ ] Distributed AI  
