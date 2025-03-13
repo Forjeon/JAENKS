@@ -1,33 +1,24 @@
 extends Node
 
 
-const BASE_PORT = 4333;
+const BASE_PORT = 2525;
+const PROXY_PLAYER_SCENE = preload("res://scenes/player/proxy_player.tscn");
 
-var mesh_hosts = {}
+var mesh_hosts = {};
 var enet = ENetMultiplayerPeer.new();
+var proxy_players = {};
 
 
 # Godot functions
 func _process(delta):
-	for id in mesh_hosts:
-		var host = mesh_hosts[id];
-		var ret = host.service();
-		
-		if ret[0] == ENetConnection.EVENT_CONNECT:
-			print("Adding host %d" % id);
-			enet.add_mesh_peer(id, host);
-			mesh_hosts.erase(id);
-		elif ret[0] != ENetConnection.EVENT_NONE:
-			print("Mesh peer error %d" % id);
-			mesh_hosts.erase(id);
-	
-	enet.poll();
+	poll_peer_slots();
 
 
 func _ready():
 	multiplayer.peer_connected.connect(self._on_peer_connected);
+	multiplayer.peer_disconnected.connect(self._on_peer_disconnected);
 	var ids = {};
-	for i in range(2, 5):
+	for i in range(2, 22):
 		ids[i] = "127.0.0.1";
 	for a in OS.get_cmdline_args():
 		if a.is_valid_int() and ids.has(a.to_int()):
@@ -60,6 +51,33 @@ func create_mesh(my_id: int, peers: Dictionary):
 		mesh_hosts[id] = connection;
 
 
+# Handle peers connecting
+func poll_peer_slots():
+	for id in mesh_hosts:
+		var host = mesh_hosts[id];
+		var ret = host.service();
+		
+		# Peer connected
+		if ret[0] == ENetConnection.EVENT_CONNECT:
+			print("Adding host %d" % id);
+			enet.add_mesh_peer(id, host);
+			mesh_hosts.erase(id);
+		# Peer error
+		elif ret[0] != ENetConnection.EVENT_NONE:
+			print("Mesh peer error %d" % id);
+			mesh_hosts.erase(id);
+	
+	enet.poll();
+
+
 # Signal functions
 func _on_peer_connected(id: int):
 	print("Peer %d connected" % id);
+	proxy_players[id] = PROXY_PLAYER_SCENE.instantiate();
+	self.add_child(proxy_players[id]);
+
+
+func _on_peer_disconnected(id: int):
+	print("Peer %d disconnected" % id);
+	self.remove_child(proxy_players[id]);
+	proxy_players.erase(id);

@@ -156,6 +156,7 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 - [ ] Projectile types and effects
 	- f
 - [ ] Shallow deflection of projectiles with projectiles, melee weapons, and defensive equipment
+- [ ] Kill/teleport spheroid (follows home base ship, warns for x seconds to return before activating)
 
 ### Movement
 - [ ] Air movement
@@ -180,6 +181,13 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 	- [ ] Steam friends only yes/no
 - [ ] Text chat
 - [ ] P2P networking
+	- [ ] Distributed processing
+		- [ ] Distributed physics
+		- [ ] Distributed AI  
+	- [ ] Hairpinning
+	- [ ] NAT punch-through
+	- [ ] Signaling server
+	- [ ] Topology optimization
 - [ ] Spectate when dead
 
 ### NPC

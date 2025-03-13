@@ -1,0 +1,52 @@
+[gd_scene load_steps=11 format=3 uid="uid://6o0lkjmhj1tb"]
+
+[ext_resource type="Script" uid="uid://dp8ed74rwnq6x" path="res://scripts/netcode/p2p_mesh.gd" id="1_lbhrr"]
+[ext_resource type="PackedScene" uid="uid://d1hc0wwrlgnw4" path="res://scenes/player/local_player.tscn" id="2_lnu2h"]
+[ext_resource type="Texture2D" uid="uid://duywgtrr3gqev" path="res://assets/dev_art/JAENKS_unit_grid.png" id="2_yqjtg"]
+[ext_resource type="Texture2D" uid="uid://rekcvfksb5c" path="res://icon.svg" id="3_lbhrr"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_iywne"]
+panorama = ExtResource("3_lbhrr")
+
+[sub_resource type="Sky" id="Sky_p57ef"]
+sky_material = SubResource("PanoramaSkyMaterial_iywne")
+
+[sub_resource type="Environment" id="Environment_lnu2h"]
+background_mode = 2
+sky = SubResource("Sky_p57ef")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uwrxv"]
+size = Vector3(20, 1, 20)
+
+[sub_resource type="BoxMesh" id="BoxMesh_uwrxv"]
+size = Vector3(20, 1, 20)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lnu2h"]
+albedo_texture = ExtResource("2_yqjtg")
+uv1_scale = Vector3(60, 40, 1)
+
+[node name="Game" type="Node3D"]
+
+[node name="P2PMesh" type="Node3D" parent="."]
+script = ExtResource("1_lbhrr")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_lnu2h")
+
+[node name="TempTestFloor" type="StaticBody3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldEnvironment/TempTestFloor"]
+shape = SubResource("BoxShape3D_uwrxv")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment/TempTestFloor"]
+mesh = SubResource("BoxMesh_uwrxv")
+surface_material_override/0 = SubResource("StandardMaterial3D_lnu2h")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(0.826033, -0.154976, 0.541896, -0.398365, 0.519615, 0.755847, -0.398716, -0.840228, 0.367483, 0, 0, 0)
+light_energy = 2.0
+shadow_enabled = true
+shadow_opacity = 0.8
+
+[node name="LocalPlayer" parent="." instance=ExtResource("2_lnu2h")]
