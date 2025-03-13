@@ -3,6 +3,14 @@ Description TODO
 
 More stuff here TODO
 
+## Documentation
+
+### Netcode
+
+#### RPC Channels
+- 0: UNASSIGNED
+- 1: player transform updates
+
 ## Platforms Progress
 - [x] Linux
 	- [x] Ubuntu

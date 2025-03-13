@@ -30,6 +30,8 @@ uv1_scale = Vector3(60, 40, 1)
 [node name="P2PMesh" type="Node3D" parent="."]
 script = ExtResource("1_lbhrr")
 
+[node name="LocalPlayer" parent="P2PMesh" instance=ExtResource("2_lnu2h")]
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_lnu2h")
 
@@ -48,5 +50,3 @@ transform = Transform3D(0.826033, -0.154976, 0.541896, -0.398365, 0.519615, 0.75
 light_energy = 2.0
 shadow_enabled = true
 shadow_opacity = 0.8
-
-[node name="LocalPlayer" parent="." instance=ExtResource("2_lnu2h")]
