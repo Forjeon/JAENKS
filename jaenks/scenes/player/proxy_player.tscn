@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://1djmybl2x35t"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_3vyb7"]
+size = Vector3(1, 2, 0.5)
+
+[node name="ProxyPlayer" type="RigidBody3D"]
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, 1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_3vyb7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("BoxMesh_3vyb7")
+skeleton = NodePath("../CollisionShape3D")

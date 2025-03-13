@@ -3,6 +3,14 @@ Description TODO
 
 More stuff here TODO
 
+## Documentation
+
+### Netcode
+
+#### RPC Channels
+- 0: UNASSIGNED
+- 1: player transform updates
+
 ## Platforms Progress
 - [x] Linux
 	- [x] Ubuntu
@@ -156,6 +164,7 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 - [ ] Projectile types and effects
 	- f
 - [ ] Shallow deflection of projectiles with projectiles, melee weapons, and defensive equipment
+- [ ] Kill/teleport spheroid (follows home base ship, warns for x seconds to return before activating)
 
 ### Movement
 - [ ] Air movement
@@ -181,6 +190,13 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 	- [ ] Join from Steam overlay friends list 
 - [ ] Text chat
 - [ ] P2P networking
+	- [ ] Distributed processing
+		- [ ] Distributed physics
+		- [ ] Distributed AI  
+	- [ ] Hairpinning
+	- [ ] NAT punch-through
+	- [ ] Signaling server
+	- [ ] Topology optimization
 - [ ] Spectate when dead
 
 ### NPC
