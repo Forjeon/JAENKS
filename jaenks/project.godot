@@ -52,6 +52,15 @@ sprint={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="Environment"
+3d_physics/layer_2="Player"
+3d_physics/layer_3="HomeBase"
+3d_physics/layer_4="NPC"
+3d_physics/layer_5="Enemy"
+3d_physics/layer_6="Projectile"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
