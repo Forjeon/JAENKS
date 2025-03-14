@@ -89,3 +89,57 @@ shape = SubResource("BoxShape3D_lbhrr")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment/TempTestWall"]
 mesh = SubResource("BoxMesh_iywne")
+
+[node name="TempTestWall2" type="StaticBody3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.88641, 5.27886, 2.12355)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldEnvironment/TempTestWall2"]
+shape = SubResource("BoxShape3D_lbhrr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment/TempTestWall2"]
+mesh = SubResource("BoxMesh_iywne")
+
+[node name="TempTestWall3" type="StaticBody3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1984, 3.32978, -1.80401)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldEnvironment/TempTestWall3"]
+shape = SubResource("BoxShape3D_lbhrr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment/TempTestWall3"]
+mesh = SubResource("BoxMesh_iywne")
+
+[node name="TempTestWall4" type="StaticBody3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.5159, 3.32978, 3.6695)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldEnvironment/TempTestWall4"]
+shape = SubResource("BoxShape3D_lbhrr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment/TempTestWall4"]
+mesh = SubResource("BoxMesh_iywne")
+
+[node name="TempTestWall5" type="StaticBody3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.6273, 3.32978, -5.52267)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldEnvironment/TempTestWall5"]
+shape = SubResource("BoxShape3D_lbhrr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment/TempTestWall5"]
+mesh = SubResource("BoxMesh_iywne")
+
+[node name="TempTestWall6" type="StaticBody3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.9309, 3.32978, 4.37981)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldEnvironment/TempTestWall6"]
+shape = SubResource("BoxShape3D_lbhrr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment/TempTestWall6"]
+mesh = SubResource("BoxMesh_iywne")
+
+[node name="TempTestWall7" type="StaticBody3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43.708, 3.32978, 0.117984)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldEnvironment/TempTestWall7"]
+shape = SubResource("BoxShape3D_lbhrr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment/TempTestWall7"]
+mesh = SubResource("BoxMesh_iywne")
