@@ -1,16 +1,27 @@
-[gd_scene load_steps=4 format=3 uid="uid://d1hc0wwrlgnw4"]
+[gd_scene load_steps=7 format=3 uid="uid://d1hc0wwrlgnw4"]
 
 [ext_resource type="Script" uid="uid://cmsrr0dusoa10" path="res://scripts/player/player.gd" id="1_3vyb7"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1lg51"]
+bounce = 0.1
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_3vyb7"]
 size = Vector3(1, 2, 0.5)
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_1lg51"]
+radius = 0.45
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ywmwa"]
+
 [node name="LocalPlayer" type="RigidBody3D"]
+collision_layer = 2
+collision_mask = 61
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
+physics_material_override = SubResource("PhysicsMaterial_1lg51")
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, 1, 0)
 script = ExtResource("1_3vyb7")
@@ -19,10 +30,24 @@ script = ExtResource("1_3vyb7")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_3vyb7")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="CameraPivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("BoxMesh_3vyb7")
 skeleton = NodePath("../CollisionShape3D")
+
+[node name="GroundedShapeCast" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+shape = SubResource("SphereShape3D_1lg51")
+target_position = Vector3(0, 0, 0)
+collision_mask = 21
+
+[node name="UncrouchShapeCast" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.51, 0)
+shape = SubResource("SphereShape3D_ywmwa")
+target_position = Vector3(0, 1, 0)
+collision_mask = 21

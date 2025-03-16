@@ -12,12 +12,12 @@ var proxy_players = {};
 
 
 # Godot functions
-func _process(delta):
+func _process(delta) -> void:
 	self.poll_peer_slots();
 	self.push_player_transform();
 
 
-func _ready():
+func _ready() -> void:
 	multiplayer.peer_connected.connect(self._on_peer_connected);
 	multiplayer.peer_disconnected.connect(self._on_peer_disconnected);
 	
@@ -30,7 +30,7 @@ func _ready():
 
 
 # Custom functions
-func create_p2p_mesh(my_id: int, peers: Dictionary):
+func create_p2p_mesh(my_id: int, peers: Dictionary) -> void:
 	self.enet.create_mesh(my_id);
 	self.multiplayer.set_multiplayer_peer(enet);
 	
@@ -56,7 +56,7 @@ func create_p2p_mesh(my_id: int, peers: Dictionary):
 
 
 #	Handle peers connecting
-func poll_peer_slots():
+func poll_peer_slots() -> void:
 	for id in self.mesh_hosts:
 		var host = self.mesh_hosts[id];
 		var ret = host.service();
@@ -74,25 +74,25 @@ func poll_peer_slots():
 	enet.poll();
 
 
-func push_player_transform():
+func push_player_transform() -> void:
 	if not proxy_players.is_empty():
 		self.rpc("transfer_player_transform", self.LOCAL_PLAYER.transform);
 
 
 # RPC functions
 @rpc("any_peer", "call_remote", "unreliable_ordered", 1)
-func transfer_player_transform(player_transform: Transform3D):
+func transfer_player_transform(player_transform: Transform3D) -> void:
 	self.proxy_players[self.multiplayer.get_remote_sender_id()].transform = player_transform;
 
 
 # Signal functions
-func _on_peer_connected(id: int):
+func _on_peer_connected(id: int) -> void:
 	print("Peer %d connected" % id);
 	self.proxy_players[id] = PROXY_PLAYER_SCENE.instantiate();
 	self.add_child(self.proxy_players[id]);
 
 
-func _on_peer_disconnected(id: int):
+func _on_peer_disconnected(id: int) -> void:
 	print("Peer %d disconnected" % id);
 	self.remove_child(self.proxy_players[id]);
 	self.proxy_players.erase(id);
