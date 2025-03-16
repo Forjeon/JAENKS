@@ -137,7 +137,7 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 		- [ ] Equipment
 		- [ ] Cosmetics
 		- [ ] Upgrades
-	- [ ] Choice of journeys to next waypoints (backtracking allowed?)
+	- [ ] Choice of lengths of journeys to next waypoints (backtracking allowed; lengths should be a tradeoff against rewards from journey drops and finds, difficulty, etc.)
 	- [ ] Mining / resource gathering and clearing
 	- [ ] Procedural settlement generation
 	- [ ] Shops
