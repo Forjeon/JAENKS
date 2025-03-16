@@ -5,7 +5,7 @@ extends RigidBody3D
 #	Force
 const AIRBORNE_MOVE_FORCE_MULT = 0.025;
 const GROUNDED_MOVE_FORCE = 1500.0;
-const VERTICAL_MOVE_FORCE_MULT = 0.8;
+const VERTICAL_MOVE_FORCE_MULT = 0.4;
 #	Speed
 const AIRBORNE_SPEED_MAX = 30.0;
 const CROUCH_SPEED_MULT = 0.5;
@@ -75,9 +75,6 @@ func _physics_process(delta: float) -> void:
 	# Damping
 	if self.do_movement_damping:
 		self.process_damping(delta);
-	print("pos: %v" % self.position);#FIXME:DEL
-	print("vel: %v" % self.linear_velocity);#FIXME:DEL
-	print("speed: %f" % self.linear_velocity.length());#FIXME:DEL
 
 
 # _ready function
@@ -149,20 +146,17 @@ func process_direct_movement(delta: float) -> void:
 	
 	# Calculate target move velocity
 	var target_move_vel = move_dir * self.get_target_move_speed();
-	print("target vel: %v" % target_move_vel);#FIXME:DEL
 	
 	# Don't scale jump force—fixes infinite flying glitch
 	if self.is_sprinting and self.is_jumping:
 		var target_vertical_move_vel = target_move_vel.project(self.transform.basis.y);
 		target_move_vel += (target_vertical_move_vel / self.SPRINT_SPEED_MULT) - target_vertical_move_vel;
-	print("target vel after: %v" % target_move_vel);#FIXME:DEL
 	
 	# Calculate move force
 	var move_force = target_move_vel * self.GROUNDED_MOVE_FORCE;
 
 	if not self.is_grounded:
 		move_force *= self.AIRBORNE_MOVE_FORCE_MULT;
-	print("move force: %v" % move_force);#FIXME:DEL
 	
 	self.apply_central_force(move_force * delta);
 
@@ -182,7 +176,5 @@ func set_target_view_rotation(screen_relative_vec: Vector2) -> void:
 # Replace vertical speed with jump based on input and state
 func try_jump() -> void:
 	if self.is_grounded or self.coyote_time < self.COYOTE_TIME_MAX:
-		var linear_horizontal_plane_vel = self.linear_velocity - (self.linear_velocity.project(self.transform.basis.y));
-		var jump_vel = self.transform.basis.y * self.JUMP_SPEED;
-		self.set_axis_velocity(linear_horizontal_plane_vel + jump_vel);
+		self.set_axis_velocity(self.transform.basis.y *self.JUMP_SPEED);
 
