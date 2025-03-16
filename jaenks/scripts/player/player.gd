@@ -17,11 +17,16 @@ const COYOTE_TIME_MAX = 0.2;
 const LOOK_SENSITIVITY = 0.005;
 
 # Onready and export variables
-@onready var player_view: Camera3D = $CameraPivot/Camera3D;
+@onready var collision: CollisionShape3D = $CollisionShape3D;
 @onready var grounded_shapecast: ShapeCast3D = $GroundedShapeCast;
+@onready var player_view: Camera3D = $CameraPivot/Camera3D;
+@onready var player_view_pivot: Node3D = $CameraPivot;
+@onready var temp_character_body: MeshInstance3D = $MeshInstance3D;	# TODO: switch this to handle actual character body
+@onready var uncrouch_shapecast: ShapeCast3D = $UncrouchShapeCast;
 
 # Instance variables
 #	State
+var can_uncrouch = true;
 var is_crouching = false;
 var is_grounded = true;
 var is_jumping = false;
@@ -30,6 +35,7 @@ var is_sprinting = false;
 var coyote_time = 0.0;
 var do_direct_movement = true;
 var do_movement_damping = true;
+var do_try_uncrouch = false;
 var target_view_rotation = Vector2();
 
 
@@ -39,9 +45,9 @@ var target_view_rotation = Vector2();
 func _input(event: InputEvent) -> void:
 	# Crouch input
 	if event.is_action_pressed("crouch"):
-		self.is_crouching = true;
+		self.try_crouch();
 	elif event.is_action_released("crouch"):
-		self.is_crouching = false;
+		self.do_try_uncrouch = true;
 
 	# Jump input
 	elif event.is_action_pressed("jump"):
@@ -52,7 +58,7 @@ func _input(event: InputEvent) -> void:
 
 	# Look input
 	elif event is InputEventMouseMotion:	# TODO: also handle controller look input
-		self.set_target_view_rotation(event.screen_relative);
+		self.set_target_view_rotation(event.get_screen_relative());
 
 	# Sprint input
 	elif event.is_action_pressed("sprint"):
@@ -66,6 +72,11 @@ func _physics_process(delta: float) -> void:
 	# Checks
 	self.check_grounded();
 	self.coyote_timer(delta);
+	self.check_uncrouch();
+
+	# State changes
+	if self.do_try_uncrouch:
+		self.try_uncrouch();
 
 	# Movement and orientation
 	self.process_look(delta);
@@ -88,6 +99,12 @@ func _ready() -> void:
 func check_grounded() -> void:
 	self.grounded_shapecast.force_shapecast_update();
 	self.is_grounded = self.grounded_shapecast.is_colliding();
+
+
+# Check if it is safe to uncrouch with spherecast
+func check_uncrouch() -> void:
+	self.uncrouch_shapecast.force_shapecast_update();
+	self.can_uncrouch = not self.uncrouch_shapecast.is_colliding();
 
 
 # Manage coyote time
@@ -173,8 +190,47 @@ func set_target_view_rotation(screen_relative_vec: Vector2) -> void:
 	self.target_view_rotation.y = clampf(self.target_view_rotation.y, -PI/2, PI/2);
 
 
+# Enter crouching state
+func try_crouch() -> void:
+	if self.is_crouching == false:
+		# Set crouching state
+		self.is_crouching = true;
+
+		# Scale and translate collision
+		self.collision.position.y = self.collision.position.y / 2.0;
+		self.collision.set_scale(Vector3(1.0, 0.5, 1.0));
+
+		# Translate view pivot
+		self.player_view_pivot.position.y = self.player_view_pivot.position.y / 2.0;
+
+		#FIXME:TEMP scale and translate temp character body
+		self.temp_character_body.position.y = self.temp_character_body.position.y / 2.0;
+		self.temp_character_body.set_scale(Vector3(1.0, 0.5, 1.0));
+		#FIXME:ENDTEMP
+
+
 # Replace vertical speed with jump based on input and state
 func try_jump() -> void:
 	if self.is_grounded or self.coyote_time < self.COYOTE_TIME_MAX:
 		self.set_axis_velocity(self.transform.basis.y *self.JUMP_SPEED);
+
+
+# Exit crouching state
+func try_uncrouch() -> void:
+	if self.can_uncrouch:
+		# Reset crouching state
+		self.is_crouching = false;
+		self.do_try_uncrouch = false;
+
+		# Scale and translate collision
+		self.collision.position.y = self.collision.position.y * 2.0;
+		self.collision.set_scale(Vector3(1.0, 1.0, 1.0));
+
+		# Translate view pivot
+		self.player_view_pivot.position.y = self.player_view_pivot.position.y * 2.0;
+
+		#FIXME:TEMP scale and translate temp character body
+		self.temp_character_body.position.y = self.temp_character_body.position.y * 2.0;
+		self.temp_character_body.set_scale(Vector3(1.0, 1.0, 1.0));
+		#FIXME:ENDTEMP
 

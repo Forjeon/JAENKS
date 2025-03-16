@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://d1hc0wwrlgnw4"]
+[gd_scene load_steps=7 format=3 uid="uid://d1hc0wwrlgnw4"]
 
 [ext_resource type="Script" uid="uid://cmsrr0dusoa10" path="res://scripts/player/player.gd" id="1_3vyb7"]
 
@@ -12,6 +12,8 @@ size = Vector3(1, 2, 0.5)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1lg51"]
 radius = 0.45
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ywmwa"]
 
 [node name="LocalPlayer" type="RigidBody3D"]
 collision_layer = 2
@@ -29,9 +31,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_3vyb7")
 
 [node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -42,4 +44,10 @@ skeleton = NodePath("../CollisionShape3D")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
 shape = SubResource("SphereShape3D_1lg51")
 target_position = Vector3(0, 0, 0)
+collision_mask = 21
+
+[node name="UncrouchShapeCast" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.51, 0)
+shape = SubResource("SphereShape3D_ywmwa")
+target_position = Vector3(0, 1, 0)
 collision_mask = 21
