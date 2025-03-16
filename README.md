@@ -10,6 +10,7 @@ More stuff here TODO
 #### RPC Channels
 - 0: UNASSIGNED
 - 1: player transform updates
+- 2: player crouch updates
 
 ## Platforms Progress
 - [x] Linux

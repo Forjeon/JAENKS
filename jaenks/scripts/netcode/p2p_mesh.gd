@@ -4,7 +4,7 @@ extends Node
 const BASE_PORT = 2525;
 const PROXY_PLAYER_SCENE = preload("res://scenes/player/proxy_player.tscn");
 
-@onready var LOCAL_PLAYER = self.find_child("LocalPlayer");
+@onready var LOCAL_PLAYER = $LocalPlayer;
 
 var mesh_hosts = {};
 var enet = ENetMultiplayerPeer.new();
@@ -14,7 +14,6 @@ var proxy_players = {};
 # Godot functions
 func _process(delta) -> void:
 	self.poll_peer_slots();
-	self.push_player_transform();
 
 
 func _ready() -> void:
@@ -80,9 +79,19 @@ func push_player_transform() -> void:
 
 
 # RPC functions
+@rpc("any_peer", "call_remote", "reliable", 2)
+func transfer_player_crouch() -> void:
+	print("RECEIVED PEER %d CROUCH" % self.multiplayer.get_remote_sender_id());	# TODO
+
+
 @rpc("any_peer", "call_remote", "unreliable_ordered", 1)
 func transfer_player_transform(player_transform: Transform3D) -> void:
 	self.proxy_players[self.multiplayer.get_remote_sender_id()].transform = player_transform;
+
+
+@rpc("any_peer", "call_remote", "reliable", 2)
+func transfer_player_uncrouch() -> void:
+	print("RECEIVED PEER %d UNCROUCH" % self.multiplayer.get_remote_sender_id());	# TODO
 
 
 # Signal functions
@@ -96,3 +105,16 @@ func _on_peer_disconnected(id: int) -> void:
 	print("Peer %d disconnected" % id);
 	self.remove_child(self.proxy_players[id]);
 	self.proxy_players.erase(id);
+
+
+func _on_player_crouch() -> void:
+	self.rpc("transfer_player_crouch");
+
+
+func _on_player_transformed(player_transform: Transform3D) -> void:
+	self.rpc("transfer_player_transform", player_transform);
+
+
+func _on_player_uncrouch() -> void:
+	self.rpc("transfer_player_uncrouch");
+

@@ -1,6 +1,12 @@
 extends RigidBody3D
 
 
+# Signals
+signal sig_crouch;
+signal sig_uncrouch;
+signal sig_transformed(new_transform: Transform3D);
+
+
 # Constants
 #	Force
 const AIRBORNE_MOVE_FORCE_MULT = 0.025;
@@ -37,6 +43,8 @@ var do_direct_movement = true;
 var do_movement_damping = true;
 var do_try_uncrouch = false;
 var target_view_rotation = Vector2();
+#	Network synchronization
+var old_transform;
 
 
 # -------------------------------{ Godot functions }------------------------------
@@ -86,6 +94,15 @@ func _physics_process(delta: float) -> void:
 	# Damping
 	if self.do_movement_damping:
 		self.process_damping(delta);
+
+
+# _process function
+func _process(delta: float) -> void:
+	# Synchronize transform
+	var new_transform = self.get_transform();
+	if new_transform != self.old_transform:
+		self.sig_transformed.emit(new_transform);
+		self.old_transform = new_transform;
 
 
 # _ready function
@@ -193,6 +210,9 @@ func set_target_view_rotation(screen_relative_vec: Vector2) -> void:
 # Enter crouching state
 func try_crouch() -> void:
 	if self.is_crouching == false:
+		# Synchronize crouch
+		self.sig_crouch.emit();
+
 		# Set crouching state
 		self.is_crouching = true;
 
@@ -218,6 +238,9 @@ func try_jump() -> void:
 # Exit crouching state
 func try_uncrouch() -> void:
 	if self.can_uncrouch:
+		# Synchronize uncrouch
+		self.sig_uncrouch.emit();
+
 		# Reset crouching state
 		self.is_crouching = false;
 		self.do_try_uncrouch = false;
