@@ -3,8 +3,9 @@ extends RigidBody3D
 
 # Signals
 signal sig_crouch;
+signal sig_positioned(new_position: Vector3);
+signal sig_rotated(new_rotation: Vector3);
 signal sig_uncrouch;
-signal sig_transformed(new_transform: Transform3D);
 
 
 # Constants
@@ -21,6 +22,8 @@ const WALK_SPEED_MAX = 5.0;
 #	Misc
 const COYOTE_TIME_MAX = 0.2;
 const LOOK_SENSITIVITY = 0.005;
+#	Network synchronization
+const TRANSFORM_SYNC_THRESHOLD = 0.01;
 
 # Onready and export variables
 @onready var collision: CollisionShape3D = $CollisionShape3D;
@@ -44,7 +47,8 @@ var do_movement_damping = true;
 var do_try_uncrouch = false;
 var target_view_rotation = Vector2();
 #	Network synchronization
-var old_transform;
+var old_position = Vector3();
+var old_rotation = Vector3();
 
 
 # -------------------------------{ Godot functions }------------------------------
@@ -98,11 +102,17 @@ func _physics_process(delta: float) -> void:
 
 # _process function
 func _process(delta: float) -> void:
-	# Synchronize transform
-	var new_transform = self.get_transform();
-	if new_transform != self.old_transform:
-		self.sig_transformed.emit(new_transform);
-		self.old_transform = new_transform;
+	# Synchronize position
+	var new_position = self.get_position();
+	if absf((new_position - self.old_position).length()) > self.TRANSFORM_SYNC_THRESHOLD:
+		self.sig_positioned(new_position);
+		self.old_position = new_position;
+
+	# Synchronize rotation
+	var new_rotation = self.get_rotation();
+	if absf((new_rotation - self.old_rotation).length()) > self.TRANSFORM_SYNC_THRESHOLD:
+		self.sig_rotated(new_rotation);
+		self.old_rotation = new_rotation;
 
 
 # _ready function
@@ -155,7 +165,7 @@ func get_target_move_speed() -> float:
 # Apply linear damping force based on current linear velocity and state
 func process_damping(delta: float) -> void:
 	var damping_force = Vector3();
-	var linear_vel = self.linear_velocity;
+	var linear_vel = self.get_linear_velocity();
 	var linear_speed = linear_vel.length();
 
 	# Grounded damping
