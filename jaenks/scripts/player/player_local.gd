@@ -10,13 +10,13 @@ signal sig_uncrouch;
 
 # Constants
 #	Force
-const AIRBORNE_MOVE_FORCE_MULT = 0.025;
+const AIRBORNE_MOVE_FORCE_MULT = 0.05;
 const GROUNDED_MOVE_FORCE = 1500.0;
-const VERTICAL_MOVE_FORCE_MULT = 0.4;
+const VERTICAL_MOVE_FORCE_MULT = 0.8;
 #	Speed
 const AIRBORNE_SPEED_MAX = 30.0;
 const CROUCH_SPEED_MULT = 0.5;
-const JUMP_SPEED = 5.0;
+const JUMP_SPEED = 2.0;
 const SPRINT_SPEED_MULT = 2.0;
 const WALK_SPEED_MAX = 5.0;
 #	Misc

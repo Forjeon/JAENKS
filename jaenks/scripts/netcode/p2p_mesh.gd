@@ -98,30 +98,24 @@ func push_player_transform() -> void:
 # Updates peers to declare that the local player has crouched
 @rpc("any_peer", "call_remote", "reliable", 2)
 func transfer_player_crouch() -> void:
-	print("RECEIVED PEER %d CROUCH" % self.multiplayer.get_remote_sender_id());	# TODO
 	self.proxy_players[self.multiplayer.get_remote_sender_id()].try_crouch();
 
 
 # Updates peers with the new local player position
 @rpc("any_peer", "call_remote", "unreliable_ordered", 1)
 func transfer_player_position(player_position: Vector3) -> void:
-	print("RECEIVED PEER %d POSITION" % self.multiplayer.get_remote_sender_id());#FIXME:DEL
-	#self.proxy_players[self.multiplayer.get_remote_sender_id()].set_position(player_position);
 	self.proxy_players[self.multiplayer.get_remote_sender_id()].update_position(player_position);
 
 
 # Updates peers with the new local player rotation
 @rpc("any_peer", "call_remote", "unreliable_ordered", 1)
 func transfer_player_rotation(player_rotation: Vector3) -> void:
-	print("RECEIVED PEER %d ROTATION" % self.multiplayer.get_remote_sender_id());#FIXME:DEL
-	#self.proxy_players[self.multiplayer.get_remote_sender_id()].set_rotation(player_rotation);
 	self.proxy_players[self.multiplayer.get_remote_sender_id()].update_rotation(player_rotation);
 
 
 # Updates peers to declare that the local player has uncrouched
 @rpc("any_peer", "call_remote", "reliable", 2)
 func transfer_player_uncrouch() -> void:
-	print("RECEIVED PEER %d UNCROUCH" % self.multiplayer.get_remote_sender_id());	# TODO
 	self.proxy_players[self.multiplayer.get_remote_sender_id()].try_uncrouch();
 
 
@@ -130,6 +124,7 @@ func transfer_player_uncrouch() -> void:
 # Activated when a peer connects to the mesh
 func _on_peer_connected(id: int) -> void:
 	print("Peer %d connected" % id);
+	# TODO: send GUI player connect note (in chatbox?)
 	self.proxy_players[id] = PROXY_PLAYER_SCENE.instantiate();
 	self.add_child(self.proxy_players[id]);
 
@@ -137,6 +132,7 @@ func _on_peer_connected(id: int) -> void:
 # Activated when a peer disconnects from the mesh
 func _on_peer_disconnected(id: int) -> void:
 	# TODO: ragdoll peer proxy player
+	# TODO: send GUI player disconnect note (in chatbox?)
 	print("Peer %d disconnected" % id);
 	self.remove_child(self.proxy_players[id]);
 	self.proxy_players.erase(id);
@@ -145,23 +141,19 @@ func _on_peer_disconnected(id: int) -> void:
 # Activated when the local player crouches
 func _on_player_crouch() -> void:
 	self.rpc("transfer_player_crouch");
-	print("CROUCH");#FIXME:DEL
 
 
 # Activated when the local player position changes
 func _on_player_positioned(player_position: Vector3) -> void:
 	self.rpc("transfer_player_position", player_position);
-	print("POSITIONED");#FIXME:DEL
 
 
 # Activated when the local player rotation changes
 func _on_player_rotated(player_rotation: Vector3) -> void:
 	self.rpc("transfer_player_rotation", player_rotation);
-	print("ROTATED");#FIXME:DEL
 
 
 # Activated when the local player uncrouches
 func _on_player_uncrouch() -> void:
 	self.rpc("transfer_player_uncrouch");
-	print("UNCROUCH");#FIXME:DEL
 
