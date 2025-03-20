@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://1djmybl2x35t"]
+[gd_scene load_steps=4 format=3 uid="uid://1djmybl2x35t"]
+
+[ext_resource type="Script" uid="uid://bnmxupj87uuv7" path="res://scripts/player/player_proxy.gd" id="1_hea5u"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
 
@@ -14,6 +16,7 @@ axis_lock_angular_y = true
 axis_lock_angular_z = true
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, 1, 0)
+script = ExtResource("1_hea5u")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

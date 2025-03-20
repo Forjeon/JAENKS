@@ -99,26 +99,30 @@ func push_player_transform() -> void:
 @rpc("any_peer", "call_remote", "reliable", 2)
 func transfer_player_crouch() -> void:
 	print("RECEIVED PEER %d CROUCH" % self.multiplayer.get_remote_sender_id());	# TODO
+	self.proxy_players[self.multiplayer.get_remote_sender_id()].try_crouch();
 
 
 # Updates peers with the new local player position
 @rpc("any_peer", "call_remote", "unreliable_ordered", 1)
 func transfer_player_position(player_position: Vector3) -> void:
 	print("RECEIVED PEER %d POSITION" % self.multiplayer.get_remote_sender_id());#FIXME:DEL
-	self.proxy_players[self.multiplayer.get_remote_sender_id()].set_position(player_position);
+	#self.proxy_players[self.multiplayer.get_remote_sender_id()].set_position(player_position);
+	self.proxy_players[self.multiplayer.get_remote_sender_id()].update_position(player_position);
 
 
 # Updates peers with the new local player rotation
 @rpc("any_peer", "call_remote", "unreliable_ordered", 1)
 func transfer_player_rotation(player_rotation: Vector3) -> void:
 	print("RECEIVED PEER %d ROTATION" % self.multiplayer.get_remote_sender_id());#FIXME:DEL
-	self.proxy_players[self.multiplayer.get_remote_sender_id()].set_rotation(player_rotation);
+	#self.proxy_players[self.multiplayer.get_remote_sender_id()].set_rotation(player_rotation);
+	self.proxy_players[self.multiplayer.get_remote_sender_id()].update_rotation(player_rotation);
 
 
 # Updates peers to declare that the local player has uncrouched
 @rpc("any_peer", "call_remote", "reliable", 2)
 func transfer_player_uncrouch() -> void:
 	print("RECEIVED PEER %d UNCROUCH" % self.multiplayer.get_remote_sender_id());	# TODO
+	self.proxy_players[self.multiplayer.get_remote_sender_id()].try_uncrouch();
 
 
 # ------------------------------{ Signal functions }------------------------------
@@ -151,7 +155,7 @@ func _on_player_positioned(player_position: Vector3) -> void:
 
 
 # Activated when the local player rotation changes
-func _on_player_rotationed(player_rotation: Vector3) -> void:
+func _on_player_rotated(player_rotation: Vector3) -> void:
 	self.rpc("transfer_player_rotation", player_rotation);
 	print("ROTATED");#FIXME:DEL
 

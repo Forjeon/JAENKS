@@ -105,13 +105,13 @@ func _process(delta: float) -> void:
 	# Synchronize position
 	var new_position = self.get_position();
 	if absf((new_position - self.old_position).length()) > self.TRANSFORM_SYNC_THRESHOLD:
-		self.sig_positioned(new_position);
+		self.sig_positioned.emit(new_position);
 		self.old_position = new_position;
 
 	# Synchronize rotation
 	var new_rotation = self.get_rotation();
 	if absf((new_rotation - self.old_rotation).length()) > self.TRANSFORM_SYNC_THRESHOLD:
-		self.sig_rotated(new_rotation);
+		self.sig_rotated.emit(new_rotation);
 		self.old_rotation = new_rotation;
 
 
