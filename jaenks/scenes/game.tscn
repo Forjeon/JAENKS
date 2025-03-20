@@ -37,7 +37,7 @@ material = SubResource("StandardMaterial3D_lbhrr")
 
 [node name="Game" type="Node3D"]
 
-[node name="P2PMesh" type="Node3D" parent="."]
+[node name="P2PMesh" type="Node" parent="."]
 script = ExtResource("1_lbhrr")
 
 [node name="LocalPlayer" parent="P2PMesh" instance=ExtResource("2_lnu2h")]

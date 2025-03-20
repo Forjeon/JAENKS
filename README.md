@@ -27,6 +27,8 @@ Art style is low poly and mix of 3D and 2D assets and VFX.
 
 Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 
+Use the phrase "this is a piece of jank" somewhere.
+
 ## Game Mechanics Progress
 
 ### Character
