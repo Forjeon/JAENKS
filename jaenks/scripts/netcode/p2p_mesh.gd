@@ -2,7 +2,7 @@ extends Node
 
 
 # Constants
-const BASE_PORT = 2525;
+const BASE_PORT = 25250;
 const PROXY_PLAYER_SCENE = preload("res://scenes/player/proxy_player.tscn");
 
 # Onready and export variables
