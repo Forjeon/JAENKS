@@ -47,25 +47,27 @@ func _ready() -> void:
 func create_p2p_mesh(my_id: int, peers: Dictionary) -> void:
 	self.enet.create_mesh(my_id);
 	self.multiplayer.set_multiplayer_peer(enet);
-	
-	var my_id_pos = peers.keys().find(my_id);
-	var port_index = 0;
+	# TODO: ALL OF THIS NEEDS TO BE REDONE. WHEN A NEW PEER JOINS, THEY HANDSHAKE WITH THE "HOST", WHO SENDS THEM THEIR LIST OF ALL CURRENTLY CONNECTED PEERS AND THEIR IPS AND ALSO ALERTS THOSE PEERS OF THE NEW PEER AND THEIR IP; EXISTING PEERS (INCLUDING THE "HOST") USE create_host_bound() TO OPEN A LISTENING CONNECTION FOR THE NEW PEER, WHO THEN USES create_host() AND connect_to_host() TO JOIN THE MESH. WHEN A PEER LEAVES, ALL REMAINING PEERS ARE NOTIFIED (MANUAL DISCONNECT) OR DETECT (NETWORK DISCONNECT) AND SIMPLY REMOVE THAT PEER FROM THEIR VIEW OF THE MESH (DISCONNECT, CLOSE BINDING, DELETE FROM PEER IP LIST). FOLLOWING THIS, LOCALHOST CANNOT BE USED AS THE IP, AND ONLY TWO PORTS WILL BE USED IN JAENKS—ONE FOR SERVER FINDING (LAN / SIGNALING SERVER) AND HANDSHAKE AND ONE FOR MESH PARTICIPATION
+
+	#var my_id_pos = peers.keys().find(my_id);
+	#var port_index = 0;
 	for id in peers:
 		if id == my_id:
 			continue;
-		
-		port_index += 1;
+
+		#port_index += 1;
 		var connection = ENetConnection.new();
-		var port = self.BASE_PORT + ((port_index + my_id_pos) % peers.size());
-		
+		var port = self.BASE_PORT + id;
+		#var port = self.BASE_PORT + ((port_index + my_id_pos) % peers.size());
+
 		if id < my_id:
 			connection.create_host_bound("*", port);
-			print("Peer %d listening on %s:%d" % [id, peers[id], port]);
+			print("Peer %d for peer %d listening on %s:%d" % [id, my_id, peers[id], port]);
 		else:
 			connection.create_host();
 			connection.connect_to_host(peers[id], port);
-			print("Peer %d connecting to %s:%d" % [id, peers[id], port]);
-		
+			print("Peer %d for peer %d connecting to %s:%d" % [id, my_id, peers[id], port]);
+
 		self.mesh_hosts[id] = connection;
 
 
