@@ -32,7 +32,15 @@ func _ready() -> void:
 	self.local_player.sig_rotated.connect(self._on_player_rotated);
 	self.local_player.sig_uncrouch.connect(self._on_player_uncrouch);
 	
-	# Create the peer-to-peer mesh
+	#FIXME:TODO: MOVE THIS TO OTHER SCRIPTS (LAN LISTENER, ONLINE SERVER SELECTOR, ETC.)
+	var peers: Dictionary = {};
+
+	if not OS.get_cmdline_args().is_empty():#FIXME:TODO: GET HOST IP FROM LAN LISTENER / ONLINE SERVER SELECTOR AND GUI STUFF
+		#	Handshake
+		# TODO: send join message to host
+		# TODO: host responds with peer list if yes or empty list if no (usually due to full lobby)
+
+	#	Create the peer-to-peer mesh
 	var ids = {};
 	for i in range(2, 22):
 		ids[i] = "127.0.0.1";
@@ -44,7 +52,8 @@ func _ready() -> void:
 # ------------------------------{ Custom functions }------------------------------
 
 # Creates the peer-to-peer mesh
-func create_p2p_mesh(my_id: int, peers: Dictionary) -> void:
+func create_p2p_mesh(peers: Dictionary) -> void:
+	var my_id: int = peers.size() + 2;
 	self.enet.create_mesh(my_id);
 	self.multiplayer.set_multiplayer_peer(enet);
 	# TODO: ALL OF THIS NEEDS TO BE REDONE. WHEN A NEW PEER JOINS, THEY HANDSHAKE WITH THE "HOST", WHO SENDS THEM THEIR LIST OF ALL CURRENTLY CONNECTED PEERS AND THEIR IPS AND ALSO ALERTS THOSE PEERS OF THE NEW PEER AND THEIR IP; EXISTING PEERS (INCLUDING THE "HOST") USE create_host_bound() TO OPEN A LISTENING CONNECTION FOR THE NEW PEER, WHO THEN USES create_host() AND connect_to_host() TO JOIN THE MESH. WHEN A PEER LEAVES, ALL REMAINING PEERS ARE NOTIFIED (MANUAL DISCONNECT) OR DETECT (NETWORK DISCONNECT) AND SIMPLY REMOVE THAT PEER FROM THEIR VIEW OF THE MESH (DISCONNECT, CLOSE BINDING, DELETE FROM PEER IP LIST). FOLLOWING THIS, LOCALHOST CANNOT BE USED AS THE IP, AND ONLY TWO PORTS WILL BE USED IN JAENKS—ONE FOR SERVER FINDING (LAN / SIGNALING SERVER) AND HANDSHAKE AND ONE FOR MESH PARTICIPATION
