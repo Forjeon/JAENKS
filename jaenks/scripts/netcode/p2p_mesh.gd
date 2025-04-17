@@ -1,5 +1,14 @@
 extends Node
 
+# TODO:
+#	MESH:
+#		HAS: peers/hosts
+#		DOES: cp2pm(), broadcast, join, peer list, add peer, new peer, bye, del peer, end
+#	GAME:
+#		HAS: proxy players, local player (?)
+#		DOES: player position, player rotation, player state (un/crouch, etc.), player connect, player disconnect
+#	DO WE NEED poll_peer_slots() ANYMORE?
+
 
 # Constants
 const BASE_PORT = 25250;
