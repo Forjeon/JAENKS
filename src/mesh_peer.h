@@ -2,7 +2,9 @@
 #define MESH_PEER_H
 
 #include <godot_cpp/classes/e_net_multiplayer_peer.hpp>
+#include <godot_cpp/classes/e_net_connection.hpp>
 #include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/templates/hash_map.hpp>
 
 namespace godot {
 
@@ -10,23 +12,24 @@ class MeshPeer : public Node {
 	GDCLASS(MeshPeer, Node)
 
 private:
-	static unsigned short const BASE_PORT = 25250;
+	static uint16_t const BASE_PORT = 25250;
 
-	Ref<ENetMultiplayerPeer> enet_peer;
+	HashMap<int, Ref<ENetConnection>> pending_peer_map;
+	Ref<ENetMultiplayerPeer> local_peer;
+
+	void add_peer(int peer_id, Ref<ENetConnection>);
+	void create_mesh(HashMap<int, STRING> peer_map);
 
 protected:
 	static void _bind_methods();
 
 public:
-	MeshPeer() :
-			enet_peer(memnew(ENetMultiplayerPeer)) {}
+	MeshPeer();
 
 	void _process(double delta) override;
 	static uint16_t get_base_port();
-	double test();
 	/*
 	MESH:
-		HAS: peers/hosts
 		DOES: cp2pm(), broadcast, join, peer list, add peer, new peer, bye, del peer, end
 
 	DO WE NEED poll_peer_slots() ANYMORE?
