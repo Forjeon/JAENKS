@@ -7,18 +7,12 @@
 using namespace godot;
 
 void MeshPeer::_bind_methods() {
-	//ClassDB::bind_method(D_METHOD("get_base_port"), &MeshPeer::get_base_port);
+	ClassDB::bind_static_method("MeshPeer", D_METHOD("get_base_port"), &MeshPeer::get_base_port);
 }
 
-MeshPeer::MeshPeer() {
-	this->enet_peer = Ref<ENetMultiplayerPeer>(memnew(ENetMultiplayerPeer));
+void MeshPeer::_process(double delta) {
 }
 
-MeshPeer::~MeshPeer() {
-}
-
-/*
-static uint16_t MeshPeer::get_base_port() {
+uint16_t MeshPeer::get_base_port() {
 	return MeshPeer::BASE_PORT;
 }
-*/

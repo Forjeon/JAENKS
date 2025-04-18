@@ -18,11 +18,12 @@ protected:
 	static void _bind_methods();
 
 public:
-	MeshPeer();
-	~MeshPeer();
+	MeshPeer() :
+			enet_peer(memnew(ENetMultiplayerPeer)) {}
 
 	void _process(double delta) override;
-	//static uint16_t get_base_port();
+	static uint16_t get_base_port();
+	double test();
 	/*
 	MESH:
 		HAS: peers/hosts
