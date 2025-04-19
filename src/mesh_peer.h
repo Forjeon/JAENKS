@@ -1,10 +1,11 @@
 #ifndef MESH_PEER_H
 #define MESH_PEER_H
 
-#include <godot_cpp/classes/e_net_multiplayer_peer.hpp>
 #include <godot_cpp/classes/e_net_connection.hpp>
+#include <godot_cpp/classes/e_net_multiplayer_peer.hpp>
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
+#include <godot_cpp/variant/string.hpp>
 
 namespace godot {
 
@@ -17,22 +18,23 @@ private:
 	HashMap<int, Ref<ENetConnection>> pending_peer_map;
 	Ref<ENetMultiplayerPeer> local_peer;
 
-	void add_peer(int peer_id, Ref<ENetConnection>);	// call_local=true
-	void create_mesh(HashMap<int, STRING> peer_map);
+	void add_peer(int peer_id, Ref<ENetConnection>); // RPC: any_peer, call_local, reliable, CHANNEL
+	void connect_peers(); // TODO: poll_peer_slots()
+	void end_mesh(); // RPC: authority (?; only host can call), call_remote, reliable, CHANNEL
+	void peer_disconnect(); // RPC: any_peer, call_remote, reliable, CHANNEL
 
 protected:
 	static void _bind_methods();
 
 public:
-	MeshPeer();
+	MeshPeer(); // Create empty mesh as host
+	MeshPeer(HashMap<int, String> peer_map); // Create mesh with existing peers as peer
 
 	void _process(double delta) override;
 	static uint16_t get_base_port();
 	/*
-	MESH:
-		DOES: cp2pm(), broadcast, join, peer list, bye, del peer, end
-
-	DO WE NEED poll_peer_slots() ANYMORE?
+	PUT BROADCAST AND PEER LIST INTO ITS OWN CLASS (ABSTRACT? SUBCLASSES FOR ONLINE VS. LAN?)
+	PUT JOIN INTO ITS OWN CLASS
 
 	PROTOCOL: client is peer, server is lobby host peer
 		FIND GAME: LAN broadcast received or check signal server
