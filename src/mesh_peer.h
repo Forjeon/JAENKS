@@ -17,7 +17,7 @@ private:
 	HashMap<int, Ref<ENetConnection>> pending_peer_map;
 	Ref<ENetMultiplayerPeer> local_peer;
 
-	void add_peer(int peer_id, Ref<ENetConnection>);
+	void add_peer(int peer_id, Ref<ENetConnection>);	// call_local=true
 	void create_mesh(HashMap<int, STRING> peer_map);
 
 protected:
@@ -30,7 +30,7 @@ public:
 	static uint16_t get_base_port();
 	/*
 	MESH:
-		DOES: cp2pm(), broadcast, join, peer list, add peer, new peer, bye, del peer, end
+		DOES: cp2pm(), broadcast, join, peer list, bye, del peer, end
 
 	DO WE NEED poll_peer_slots() ANYMORE?
 
