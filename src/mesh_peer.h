@@ -18,10 +18,10 @@ private:
 	HashMap<int, Ref<ENetConnection>> pending_peer_map;
 	Ref<ENetMultiplayerPeer> local_peer;
 
-	void add_peer(int peer_id, Ref<ENetConnection>); // RPC: any_peer, call_local, reliable, CHANNEL
+	void add_peer(int peer_id, String &ip_addr); // RPC: any_peer, call_local, reliable, CHANNEL
 	void connect_peers(); // TODO: poll_peer_slots()
 	void end_mesh(); // RPC: authority (?; only host can call), call_remote, reliable, CHANNEL
-	void peer_disconnect(); // RPC: any_peer, call_remote, reliable, CHANNEL
+	void disconnect_peer(); // RPC: any_peer, call_remote, reliable, CHANNEL
 
 protected:
 	static void _bind_methods();
