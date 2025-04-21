@@ -15,6 +15,7 @@ class MeshPeer : public Node {
 private:
 	static uint16_t const BASE_PORT = 25250;
 
+	bool is_host;
 	HashMap<int, Ref<ENetConnection>> pending_peer_map;
 	Ref<ENetMultiplayerPeer> local_peer;
 

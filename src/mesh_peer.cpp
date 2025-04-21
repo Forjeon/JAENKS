@@ -5,6 +5,7 @@
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
+#include <godot_cpp/variant/string.hpp>
 
 using namespace godot;
 
@@ -13,7 +14,11 @@ void MeshPeer::_bind_methods() {
 }
 
 MeshPeer::MeshPeer() :
-		pending_peer_map(), local_peer(memnew(ENetMultiplayerPeer)) {
+		is_host(true), pending_peer_map(), local_peer(memnew(ENetMultiplayerPeer)) {}
+
+MeshPeer::MeshPeer(HashMap<int, String> peer_map) :
+		is_host(false), pending_peer_map(), local_peer(memnew(ENetMultiplayerPeer)) {
+	// TODO: create mesh from peer_map
 }
 
 void MeshPeer::_process(double delta) {
