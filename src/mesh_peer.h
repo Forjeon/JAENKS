@@ -15,13 +15,13 @@ class MeshPeer : public Node {
 private:
 	static int const HOST_PEER_ID = 2;
 
-	bool const is_host;
+	bool is_host;
 	HashMap<int, Ref<ENetConnection>> pending_peers;
-	int const id;
+	int id;
 	Ref<ENetMultiplayerPeer> local_peer;
 
 	void add_peer(int p_id, const String &p_address); // RPC: authority (?; only host can call), call_local, reliable, CHANNEL
-	void connect_peers(); // TODO: poll_peer_slots()
+	void connect_pending_peers(); // TODO: poll_peer_slots()
 	void end_mesh(); // RPC: authority (?; only host can call), call_remote, reliable, CHANNEL
 	void disconnect_peer(); // RPC: any_peer, call_remote, reliable, CHANNEL
 	void set_up_local_peer();
@@ -33,10 +33,13 @@ protected:
 public:
 	static uint16_t const BASE_PORT = 25250;
 
-	MeshPeer(); // Create empty mesh as host
-	MeshPeer(const HashMap<int, String> &p_peers); // Create mesh with existing peers as peer
+	MeshPeer() :
+			is_host(true), pending_peers(), id(MeshPeer::HOST_PEER_ID), local_peer(memnew(ENetMultiplayerPeer)){};
 
 	void _process(double p_delta) override;
+	void _ready() override;
+
+	void set_as_peer(const HashMap<int, String> &p_peers);
 	/*
 	POSSIBLE PROBLEM WHEREIN A NEW PEER ONLY ESTABLISHES SUCCESSFUL CONNECTIONS WITH PART OF THE NETWORK; HOW TO HANDLE?? (RETRY HOW MANY TIMES BEFORE DISCONNECT FROM LOBBY?)
 

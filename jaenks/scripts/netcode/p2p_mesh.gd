@@ -35,8 +35,8 @@ func _ready() -> void:
 	#FIXME:TODO: MOVE THIS TO OTHER SCRIPTS (LAN LISTENER, ONLINE SERVER SELECTOR, ETC.)
 	var peers: Dictionary = {};
 
-	if not OS.get_cmdline_args().is_empty():#FIXME:TODO: GET HOST IP FROM LAN LISTENER / ONLINE SERVER SELECTOR AND GUI STUFF
-		self.create_p2p_mesh({});
+	#if not OS.get_cmdline_args().is_empty():#FIXME:TODO: GET HOST IP FROM LAN LISTENER / ONLINE SERVER SELECTOR AND GUI STUFF
+		#self.create_p2p_mesh({});
 
 	#	Create the peer-to-peer mesh
 	var ids = {};
@@ -44,7 +44,8 @@ func _ready() -> void:
 		ids[i] = "127.0.0.1";
 	for a in OS.get_cmdline_args():
 		if a.is_valid_int() and ids.has(a.to_int()):
-			self.create_p2p_mesh(a.to_int(), ids);
+			#self.create_p2p_mesh(a.to_int(), ids);
+			self.create_p2p_mesh(peers);
 
 
 # ------------------------------{ Custom functions }------------------------------

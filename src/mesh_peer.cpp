@@ -11,50 +11,50 @@
 
 using namespace godot;
 
+/*
 void MeshPeer::add_peer(int p_id, const String &p_address) {
-	// TODO
+// TODO
 }
 
-void MeshPeer::connect_peers() {
-	for (HashMap<int, Ref<ENetConnection>>::ConstIterator it = this->pending_peers.begin(); it; ++it) {
-		// TODO
-	}
-
-	if (!this->pending_peers.is_empty())
-		this->local_peer->poll();
+void MeshPeer::connect_pending_peers() {
+for (HashMap<int, Ref<ENetConnection>>::ConstIterator it = this->pending_peers.begin(); it; ++it) {
+	// TODO
+}
 }
 
 void MeshPeer::end_mesh() {
-	// TODO
+// TODO
 }
 
 void MeshPeer::disconnect_peer() {
-	// TODO
+// TODO
 }
 
 void MeshPeer::set_up_local_peer() {
-	this->local_peer->create_mesh(this->id);
-	this->get_multiplayer()->set_multiplayer_peer(this->local_peer);
+this->local_peer->create_mesh(this->id);
+this->get_multiplayer()->set_multiplayer_peer(this->local_peer);
 }
 
 void MeshPeer::set_up_rpcs() {
-	// TODO
+// TODO
 }
+*/
 
 void MeshPeer::_bind_methods() {
 	BIND_CONSTANT(MeshPeer::BASE_PORT);
 }
 
-MeshPeer::MeshPeer() :
-		is_host(true), pending_peers(), id(MeshPeer::HOST_PEER_ID), local_peer(memnew(ENetMultiplayerPeer)) {
-	this->set_up_local_peer();
-	this->set_up_rpcs();
+void MeshPeer::_process(double p_delta) {
+	//this->connect_pending_peers();
 }
 
-MeshPeer::MeshPeer(const HashMap<int, String> &p_peers) :
-		is_host(false), pending_peers(), id(p_peers.size() + MeshPeer::HOST_PEER_ID), local_peer(memnew(ENetMultiplayerPeer)) {
+void MeshPeer::_ready() {
 	this->set_up_local_peer();
-	this->set_up_rpcs();
+}
+
+void MeshPeer::set_as_peer(const HashMap<int, String> &p_peers) {
+	this->is_host = false;
+	this->id = p_peers.size() + MeshPeer::HOST_PEER_ID;
 
 	// Create the pending mesh peers (will be finalized in connect_peers())
 	for (HashMap<int, String>::ConstIterator it = p_peers.begin(); it; ++it) {
@@ -63,8 +63,4 @@ MeshPeer::MeshPeer(const HashMap<int, String> &p_peers) :
 		peer_connection->connect_to_host((*it).value, MeshPeer::BASE_PORT + this->id);
 		this->pending_peers.insert((*it).key, peer_connection);
 	}
-}
-
-void MeshPeer::_process(double p_delta) {
-	this->connect_peers();
 }
