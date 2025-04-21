@@ -1,10 +1,5 @@
 extends Node
 
-# TODO:
-#	GAME:
-#		HAS: proxy players, local player (?)
-#		DOES: player position, player rotation, player state (un/crouch, etc.), player connect, player disconnect
-
 
 # Constants
 const BASE_PORT = 25250;
@@ -41,9 +36,7 @@ func _ready() -> void:
 	var peers: Dictionary = {};
 
 	if not OS.get_cmdline_args().is_empty():#FIXME:TODO: GET HOST IP FROM LAN LISTENER / ONLINE SERVER SELECTOR AND GUI STUFF
-		#	Handshake
-		# TODO: send join message to host
-		# TODO: host responds with peer list if yes or empty list if no (usually due to full lobby)
+		self.create_p2p_mesh({});
 
 	#	Create the peer-to-peer mesh
 	var ids = {};
@@ -61,18 +54,13 @@ func create_p2p_mesh(peers: Dictionary) -> void:
 	var my_id: int = peers.size() + 2;
 	self.enet.create_mesh(my_id);
 	self.multiplayer.set_multiplayer_peer(enet);
-	# TODO: ALL OF THIS NEEDS TO BE REDONE. WHEN A NEW PEER JOINS, THEY HANDSHAKE WITH THE "HOST", WHO SENDS THEM THEIR LIST OF ALL CURRENTLY CONNECTED PEERS AND THEIR IPS AND ALSO ALERTS THOSE PEERS OF THE NEW PEER AND THEIR IP; EXISTING PEERS (INCLUDING THE "HOST") USE create_host_bound() TO OPEN A LISTENING CONNECTION FOR THE NEW PEER, WHO THEN USES create_host() AND connect_to_host() TO JOIN THE MESH. WHEN A PEER LEAVES, ALL REMAINING PEERS ARE NOTIFIED (MANUAL DISCONNECT) OR DETECT (NETWORK DISCONNECT) AND SIMPLY REMOVE THAT PEER FROM THEIR VIEW OF THE MESH (DISCONNECT, CLOSE BINDING, DELETE FROM PEER IP LIST). FOLLOWING THIS, LOCALHOST CANNOT BE USED AS THE IP, AND ONLY TWO PORTS WILL BE USED IN JAENKS—ONE FOR SERVER FINDING (LAN / SIGNALING SERVER) AND HANDSHAKE AND ONE FOR MESH PARTICIPATION
 
-	#var my_id_pos = peers.keys().find(my_id);
-	#var port_index = 0;
 	for id in peers:
 		if id == my_id:
 			continue;
 
-		#port_index += 1;
 		var connection = ENetConnection.new();
 		var port = self.BASE_PORT + id;
-		#var port = self.BASE_PORT + ((port_index + my_id_pos) % peers.size());
 
 		if id < my_id:
 			connection.create_host_bound("*", port);

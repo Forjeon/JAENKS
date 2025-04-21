@@ -13,27 +13,33 @@ class MeshPeer : public Node {
 	GDCLASS(MeshPeer, Node)
 
 private:
-	static uint16_t const BASE_PORT = 25250;
+	static int const HOST_PEER_ID = 2;
 
-	bool is_host;
-	HashMap<int, Ref<ENetConnection>> pending_peer_map;
+	bool const is_host;
+	HashMap<int, Ref<ENetConnection>> pending_peers;
+	int const id;
 	Ref<ENetMultiplayerPeer> local_peer;
 
-	void add_peer(int peer_id, String &ip_addr); // RPC: any_peer, call_local, reliable, CHANNEL
+	void add_peer(int p_id, const String &p_address); // RPC: authority (?; only host can call), call_local, reliable, CHANNEL
 	void connect_peers(); // TODO: poll_peer_slots()
 	void end_mesh(); // RPC: authority (?; only host can call), call_remote, reliable, CHANNEL
 	void disconnect_peer(); // RPC: any_peer, call_remote, reliable, CHANNEL
+	void set_up_local_peer();
+	void set_up_rpcs();
 
 protected:
 	static void _bind_methods();
 
 public:
-	MeshPeer(); // Create empty mesh as host
-	MeshPeer(HashMap<int, String> peer_map); // Create mesh with existing peers as peer
+	static uint16_t const BASE_PORT = 25250;
 
-	void _process(double delta) override;
-	static uint16_t get_base_port();
+	MeshPeer(); // Create empty mesh as host
+	MeshPeer(const HashMap<int, String> &p_peers); // Create mesh with existing peers as peer
+
+	void _process(double p_delta) override;
 	/*
+	POSSIBLE PROBLEM WHEREIN A NEW PEER ONLY ESTABLISHES SUCCESSFUL CONNECTIONS WITH PART OF THE NETWORK; HOW TO HANDLE?? (RETRY HOW MANY TIMES BEFORE DISCONNECT FROM LOBBY?)
+
 	PUT BROADCAST AND PEER LIST INTO ITS OWN CLASS (ABSTRACT? SUBCLASSES FOR ONLINE VS. LAN?)
 	PUT JOIN INTO ITS OWN CLASS
 
