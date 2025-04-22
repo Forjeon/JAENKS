@@ -49,7 +49,7 @@ void MeshPeer::_process(double p_delta) {
 }
 
 void MeshPeer::_ready() {
-	this->set_up_local_peer();
+	//this->set_up_local_peer();
 }
 
 void MeshPeer::set_as_peer(const HashMap<int, String> &p_peers) {

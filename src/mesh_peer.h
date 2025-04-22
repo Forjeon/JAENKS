@@ -20,12 +20,14 @@ private:
 	int id;
 	Ref<ENetMultiplayerPeer> local_peer;
 
+	/*
 	void add_peer(int p_id, const String &p_address); // RPC: authority (?; only host can call), call_local, reliable, CHANNEL
 	void connect_pending_peers(); // TODO: poll_peer_slots()
 	void end_mesh(); // RPC: authority (?; only host can call), call_remote, reliable, CHANNEL
 	void disconnect_peer(); // RPC: any_peer, call_remote, reliable, CHANNEL
 	void set_up_local_peer();
 	void set_up_rpcs();
+	*/
 
 protected:
 	static void _bind_methods();
