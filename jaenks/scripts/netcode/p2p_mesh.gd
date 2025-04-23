@@ -10,7 +10,7 @@ const PROXY_PLAYER_SCENE = preload("res://scenes/player/proxy_player.tscn");
 
 # Instance variables
 var local_peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new();
-var pending_peers: Dictionary<int, ENetConnection> = {};
+var pending_peers: Dictionary = {};
 var peer_id: int;
 var proxy_players: Dictionary = {};
 
@@ -18,7 +18,7 @@ var proxy_players: Dictionary = {};
 # -------------------------------{ Godot functions }------------------------------
 
 func _process(delta) -> void:
-	self.poll_peer_slots();
+	self.connect_pending_peers();
 
 
 # _ready function
@@ -36,66 +36,62 @@ func _ready() -> void:
 	#FIXME:TODO: MOVE THIS TO OTHER SCRIPTS (LAN LISTENER, ONLINE SERVER SELECTOR, ETC.)
 	#var peers: Dictionary = {};
 
-	if not OS.get_cmdline_args().is_empty():#FIXME:TODO: GET HOST IP FROM LAN LISTENER / ONLINE SERVER SELECTOR AND GUI STUFF
-		self.create_p2p_mesh({});
+	if OS.get_cmdline_args().is_empty():#FIXME:TODO: GET HOST IP FROM LAN LISTENER / ONLINE SERVER SELECTOR AND GUI STUFF
+		print("HOST");#FIXME:DEL
+		self.set_up_local_peer(2);
+		self.create_mesh({});
+		self.add_peer(3, "10.0.0.8");
 	else:
-		self.create_p2p_mesh({2: "10.0.0.8"});
-
-	#	Create the peer-to-peer mesh
-	#var ids = {};
-	#for i in range(2, 22):
-		#ids[i] = "127.0.0.1";
-	#for a in OS.get_cmdline_args():
-		#if a.is_valid_int() and ids.has(a.to_int()):
-			#self.create_p2p_mesh(a.to_int(), ids);
-			#self.create_p2p_mesh(peers);
+		print("NOT HOST");#FIXME:DEL
+		self.set_up_local_peer(3);
+		self.create_mesh({2: "10.0.0.8"});
 
 
 # ------------------------------{ Custom functions }------------------------------
 
+# Adds a new peer to the mesh
+func add_peer(id: int, address: String) -> void:
+	var peer_connection = ENetConnection.new();
+	var port = self.BASE_PORT + self.peer_id;
+	peer_connection.create_host();
+	peer_connection.connect_to_host(address, port);
+	print("Connecting to peer %d at %s:%d" % [id, address, port]);
+	self.pending_peers[id] = peer_connection;
+
+
 # Creates the peer-to-peer mesh
-func create_p2p_mesh(peers: Dictionary) -> void:
-	self.peer_id = peers.size() + 2;
-	self.set_up_local_peer();
-
+func create_mesh(peers: Dictionary) -> void:
 	for id in peers:
-		if id == self.peer_id:
-			continue;
-
-		var connection = ENetConnection.new();
+		var peer_connection = ENetConnection.new();
 		var port = self.BASE_PORT + id;
-
-		if id < self.peer_id:
-			connection.create_host_bound("*", port);
-			print("Peer %d for peer %d listening on %s:%d" % [id, self.peer_id, peers[id], port]);
-		else:
-			connection.create_host();
-			connection.connect_to_host(peers[id], port);
-			print("Peer %d for peer %d connecting to %s:%d" % [id, self.peer_id, peers[id], port]);
-
-		self.pending_peers[id] = connection;
+		peer_connection.create_host_bound(peers[id], port);
+		print("Listening for peer %d at %s:%d" % [id, peers[id], port]);
+		self.pending_peers[id] = peer_connection;
 
 
 #	Handle peers connecting
-func poll_peer_slots() -> void:
+func connect_pending_peers() -> void:
 	for id in self.pending_peers:
-		var host = self.pending_peers[id];
-		var ret = host.service();
+		var peer_connection = self.pending_peers[id];
+		var ret = peer_connection.service();
 		
 		# Peer connected
 		if ret[0] == ENetConnection.EVENT_CONNECT:
-			print("Adding host %d" % id);
-			self.local_peer.add_mesh_peer(id, host);
+			print("Adding peer %d" % id);
+			self.local_peer.add_mesh_peer(id, peer_connection);
 			self.pending_peers.erase(id);
 		# Peer error
 		elif ret[0] != ENetConnection.EVENT_NONE:
 			print("Mesh peer error %d" % id);
 			self.pending_peers.erase(id);
+			#FIXME:TODO: RETRY HOW MANY TIMES BEFORE THIS LOCAL PEER DISCONNECTS ITSELF DUE TO INCOMPLETE MESH CONSTRUCTION?
 	
-	self.local_peer.poll();
+	if not self.pending_peers.is_empty():
+		self.local_peer.poll();
 
 
-func set_up_local_peer() -> void:
+func set_up_local_peer(peer_id: int) -> void:
+	self.peer_id = peer_id;
 	self.local_peer.create_mesh(self.peer_id);
 	self.multiplayer.set_multiplayer_peer(self.local_peer);
 
@@ -163,4 +159,3 @@ func _on_player_rotated(player_rotation: Vector3) -> void:
 # Activated when the local player uncrouches
 func _on_player_uncrouch() -> void:
 	self.rpc("transfer_player_uncrouch");
-
