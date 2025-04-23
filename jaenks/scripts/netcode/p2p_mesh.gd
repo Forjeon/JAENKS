@@ -2,8 +2,8 @@ extends Node
 
 
 # Constants
-const BASE_PORT = 25250;
-const PROXY_PLAYER_SCENE = preload("res://scenes/player/proxy_player.tscn");
+const BASE_PORT: int = 25250;
+const PROXY_PLAYER_SCENE: PackedScene = preload("res://scenes/player/proxy_player.tscn");
 
 # Onready and export variables
 @onready var local_player = $LocalPlayer;
@@ -17,7 +17,7 @@ var proxy_players: Dictionary = {};
 
 # -------------------------------{ Godot functions }------------------------------
 
-func _process(delta) -> void:
+func _process(delta: float) -> void:
 	self.connect_pending_peers();
 
 
@@ -32,19 +32,25 @@ func _ready() -> void:
 	self.local_player.sig_positioned.connect(self._on_player_positioned);
 	self.local_player.sig_rotated.connect(self._on_player_rotated);
 	self.local_player.sig_uncrouch.connect(self._on_player_uncrouch);
+
+	# Connect local lobby host signals
+	#FIXME:TODO: LOBBY HOST SHOULD ONLY EXIST IF THIS PEER IS HOST (WILL BE HANDLED BY MENU SCREEN SCRIPT; CURRENTLY BOTH HOST AND LISTENER ARE PRESENT BUT DISABLED BASED ON CLI ARGS)
+	$LobbyHost.sig_join_approved.connect(self._on_host_join_approved);
+
+	# Connect local listener signals
+	#FIXME:TODO: LISTENER SHOULD ONLY EXIST IF THIS PEER IS NOT HOST (WILL BE HANDLED BY MENU SCREEN SCRIPT; CURRENTLY BOTH HOST AND LISTENER ARE PRESENT BUT DISABLED BASED ON CLI ARGS)
+	$LanLobbyListener.sig_join_approved.connect(self._on_listener_join_approved);
 	
 	#FIXME:TODO: MOVE THIS TO OTHER SCRIPTS (LAN LISTENER, ONLINE SERVER SELECTOR, ETC.)
 	#var peers: Dictionary = {};
 
 	if OS.get_cmdline_args().is_empty():#FIXME:TODO: GET HOST IP FROM LAN LISTENER / ONLINE SERVER SELECTOR AND GUI STUFF
-		print("HOST");#FIXME:DEL
 		self.set_up_local_peer(2);
-		self.create_mesh({});
-		self.add_peer(3, "10.0.0.8");
+		self.create_mesh([]);
+		#self.add_peer(3, "10.0.0.8");
 	else:
-		print("NOT HOST");#FIXME:DEL
 		self.set_up_local_peer(3);
-		self.create_mesh({2: "10.0.0.8"});
+		self.create_mesh([2]);
 
 
 # ------------------------------{ Custom functions }------------------------------
@@ -60,12 +66,12 @@ func add_peer(id: int, address: String) -> void:
 
 
 # Creates the peer-to-peer mesh
-func create_mesh(peers: Dictionary) -> void:
+func create_mesh(peers: Array) -> void:
 	for id in peers:
 		var peer_connection = ENetConnection.new();
 		var port = self.BASE_PORT + id;
-		peer_connection.create_host_bound(peers[id], port);
-		print("Listening for peer %d at %s:%d" % [id, peers[id], port]);
+		peer_connection.create_host_bound("*", port);
+		print("Listening for peer %d at *:%d" % [id, port]);
 		self.pending_peers[id] = peer_connection;
 
 
@@ -123,6 +129,17 @@ func transfer_player_uncrouch() -> void:
 
 
 # ------------------------------{ Signal functions }------------------------------
+
+# Activated when a peer has been approved to join the mesh hosted by this peer
+func _on_host_join_approved(address: String) -> void:
+	var peer_id = 3;#FIXME: DETERMINE THIS BASED ON SMALLEST PEER ID > 2 WHICH IS NOT YET TAKEN
+	self.add_peer(peer_id, address);
+
+
+# Activated when this peer has been approved to join a mesh
+func _on_listener_join_approved(peers: Array) -> void:
+	self.create_mesh(peers);
+
 
 # Activated when a peer connects to the mesh
 func _on_peer_connected(id: int) -> void:
