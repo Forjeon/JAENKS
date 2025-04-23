@@ -5,6 +5,7 @@
 #include <godot_cpp/classes/e_net_multiplayer_peer.hpp>
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
 #include <godot_cpp/variant/string.hpp>
 
 namespace godot {
@@ -17,17 +18,17 @@ private:
 
 	bool is_host;
 	HashMap<int, Ref<ENetConnection>> pending_peers;
-	int id;
+	int peer_id;
 	Ref<ENetMultiplayerPeer> local_peer;
 
+	void add_peer(int p_peer_id, const String &p_address); // RPC: authority (?; only host can call), call_local, reliable, CHANNEL
 	/*
-	void add_peer(int p_id, const String &p_address); // RPC: authority (?; only host can call), call_local, reliable, CHANNEL
 	void connect_pending_peers(); // TODO: poll_peer_slots()
+	*/
 	void end_mesh(); // RPC: authority (?; only host can call), call_remote, reliable, CHANNEL
 	void disconnect_peer(); // RPC: any_peer, call_remote, reliable, CHANNEL
 	void set_up_local_peer();
 	void set_up_rpcs();
-	*/
 
 protected:
 	static void _bind_methods();
@@ -36,7 +37,7 @@ public:
 	static uint16_t const BASE_PORT = 25250;
 
 	MeshPeer() :
-			is_host(true), pending_peers(), id(MeshPeer::HOST_PEER_ID), local_peer(memnew(ENetMultiplayerPeer)){};
+			is_host(true), pending_peers(), peer_id(MeshPeer::HOST_PEER_ID), local_peer(memnew(ENetMultiplayerPeer)){};
 
 	void _process(double p_delta) override;
 	void _ready() override;
