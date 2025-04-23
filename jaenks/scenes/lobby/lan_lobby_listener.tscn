@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bofvvj77yt7ox"]
-
-[ext_resource type="Script" uid="uid://vfkjrq30x1w7" path="res://scripts/netcode/lan_lobby_listener.gd" id="1_r376p"]
-
-[node name="LANLobbyListener" type="Node"]
-script = ExtResource("1_r376p")

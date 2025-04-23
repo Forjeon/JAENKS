@@ -39,9 +39,10 @@ func _ready() -> void:
 # Broadcasts LAN server and player count
 func broadcast_server() -> void:
 	var player_count = 1;	# TODO: get number of players currently connected
-	broadcast_peer.put_packet(("%s;%s;%d" % [self.BROADCAST_MESSAGE, self.server_name, player_count]).to_utf8_buffer());
+	var max_players = 20;	# TODO: get max player count
+	broadcast_peer.put_packet(("%s;%s;%d;%d" % [self.BROADCAST_MESSAGE, self.server_name, player_count, max_players]).to_utf8_buffer());
 
 
-func set_server_name(name: String) -> void:
-	self.server_name = name;
+func set_server_name(n: String) -> void:
+	self.server_name = n;
 
