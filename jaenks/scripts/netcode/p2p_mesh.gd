@@ -2,7 +2,7 @@ extends Node
 
 
 # Constants
-const BASE_PORT: int = 25250;
+const BASE_PORT: int = LobbyHostGD.BROADCAST_PORT;
 const PROXY_PLAYER_SCENE: PackedScene = preload("res://scenes/player/proxy_player.tscn");
 
 # Onready and export variables
@@ -10,9 +10,9 @@ const PROXY_PLAYER_SCENE: PackedScene = preload("res://scenes/player/proxy_playe
 
 # Instance variables
 var local_peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new();
-var pending_peers: Dictionary = {};
+var pending_peers: Dictionary[int, ENetConnection] = {};
 var peer_id: int;
-var proxy_players: Dictionary = {};
+var proxy_players: Dictionary[int, Node] = {};
 
 
 # -------------------------------{ Godot functions }------------------------------
