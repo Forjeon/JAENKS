@@ -9,9 +9,10 @@ const PROXY_PLAYER_SCENE = preload("res://scenes/player/proxy_player.tscn");
 @onready var local_player = $LocalPlayer;
 
 # Instance variables
-var mesh_hosts = {};
-var enet = ENetMultiplayerPeer.new();
-var proxy_players = {};
+var local_peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new();
+var pending_peers: Dictionary<int, ENetConnection> = {};
+var peer_id: int;
+var proxy_players: Dictionary = {};
 
 
 # -------------------------------{ Godot functions }------------------------------
@@ -33,69 +34,70 @@ func _ready() -> void:
 	self.local_player.sig_uncrouch.connect(self._on_player_uncrouch);
 	
 	#FIXME:TODO: MOVE THIS TO OTHER SCRIPTS (LAN LISTENER, ONLINE SERVER SELECTOR, ETC.)
-	var peers: Dictionary = {};
+	#var peers: Dictionary = {};
 
-	#if not OS.get_cmdline_args().is_empty():#FIXME:TODO: GET HOST IP FROM LAN LISTENER / ONLINE SERVER SELECTOR AND GUI STUFF
-		#self.create_p2p_mesh({});
+	if not OS.get_cmdline_args().is_empty():#FIXME:TODO: GET HOST IP FROM LAN LISTENER / ONLINE SERVER SELECTOR AND GUI STUFF
+		self.create_p2p_mesh({});
+	else:
+		self.create_p2p_mesh({2: "10.0.0.8"});
 
 	#	Create the peer-to-peer mesh
-	var ids = {};
-	for i in range(2, 22):
-		ids[i] = "127.0.0.1";
-	for a in OS.get_cmdline_args():
-		if a.is_valid_int() and ids.has(a.to_int()):
+	#var ids = {};
+	#for i in range(2, 22):
+		#ids[i] = "127.0.0.1";
+	#for a in OS.get_cmdline_args():
+		#if a.is_valid_int() and ids.has(a.to_int()):
 			#self.create_p2p_mesh(a.to_int(), ids);
-			self.create_p2p_mesh(peers);
+			#self.create_p2p_mesh(peers);
 
 
 # ------------------------------{ Custom functions }------------------------------
 
 # Creates the peer-to-peer mesh
 func create_p2p_mesh(peers: Dictionary) -> void:
-	var my_id: int = peers.size() + 2;
-	self.enet.create_mesh(my_id);
-	self.multiplayer.set_multiplayer_peer(enet);
+	self.peer_id = peers.size() + 2;
+	self.set_up_local_peer();
 
 	for id in peers:
-		if id == my_id:
+		if id == self.peer_id:
 			continue;
 
 		var connection = ENetConnection.new();
 		var port = self.BASE_PORT + id;
 
-		if id < my_id:
+		if id < self.peer_id:
 			connection.create_host_bound("*", port);
-			print("Peer %d for peer %d listening on %s:%d" % [id, my_id, peers[id], port]);
+			print("Peer %d for peer %d listening on %s:%d" % [id, self.peer_id, peers[id], port]);
 		else:
 			connection.create_host();
 			connection.connect_to_host(peers[id], port);
-			print("Peer %d for peer %d connecting to %s:%d" % [id, my_id, peers[id], port]);
+			print("Peer %d for peer %d connecting to %s:%d" % [id, self.peer_id, peers[id], port]);
 
-		self.mesh_hosts[id] = connection;
+		self.pending_peers[id] = connection;
 
 
 #	Handle peers connecting
 func poll_peer_slots() -> void:
-	for id in self.mesh_hosts:
-		var host = self.mesh_hosts[id];
+	for id in self.pending_peers:
+		var host = self.pending_peers[id];
 		var ret = host.service();
 		
 		# Peer connected
 		if ret[0] == ENetConnection.EVENT_CONNECT:
 			print("Adding host %d" % id);
-			self.enet.add_mesh_peer(id, host);
-			self.mesh_hosts.erase(id);
+			self.local_peer.add_mesh_peer(id, host);
+			self.pending_peers.erase(id);
 		# Peer error
 		elif ret[0] != ENetConnection.EVENT_NONE:
 			print("Mesh peer error %d" % id);
-			self.mesh_hosts.erase(id);
+			self.pending_peers.erase(id);
 	
-	enet.poll();
+	self.local_peer.poll();
 
 
-func push_player_transform() -> void:
-	if not proxy_players.is_empty():
-		self.rpc("transfer_player_transform", self.local_player.transform);
+func set_up_local_peer() -> void:
+	self.local_peer.create_mesh(self.peer_id);
+	self.multiplayer.set_multiplayer_peer(self.local_peer);
 
 
 # --------------------------------{ RPC functions }-------------------------------

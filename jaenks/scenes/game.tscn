@@ -41,6 +41,7 @@ material = SubResource("StandardMaterial3D_lbhrr")
 script = ExtResource("1_lbhrr")
 
 [node name="LocalPlayer" parent="P2PMesh" instance=ExtResource("2_lnu2h")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_lnu2h")
