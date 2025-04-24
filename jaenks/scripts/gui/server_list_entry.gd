@@ -2,14 +2,13 @@ class_name ServerListEntryGD extends MarginContainer
 
 
 # Signals
-signal sig_join_pressed(server_address: String);
+signal sig_join(server_name: String, server_address: String);
 
 
 # Onready and export variables
 @onready var name_label: Label = $HBoxContainer/ServerName;
 @onready var address_label: Label = $HBoxContainer/ServerAddress;
 @onready var player_count_label: Label = $HBoxContainer/ServerPlayerCount;
-@onready var join_button: Button = $HBoxContainer/JoinButton;
 
 # Instance variables
 var server_name: String;
@@ -23,7 +22,7 @@ var max_player_count: int;
 # _ready function
 func _ready() -> void:
 	# Connect join button signals
-	self.join_button.pressed.connect(self._on_join_button_pressed);
+	$HBoxContainer/JoinButton.pressed.connect(self._on_join_button_pressed);
 
 	# Set up labels
 	self.name_label.set_text(self.server_name);
@@ -52,5 +51,5 @@ func set_server_details(n: String, address: String, players: int, max_players: i
 
 # Activated when the join button is pressed
 func _on_join_button_pressed() -> void:
-	print("JOIN PRESSED");#FIXME:DEL
-	self.sig_join_pressed.emit(self.get_server_address());
+	self.sig_join.emit(self.get_server_name(), self.get_server_address());
+

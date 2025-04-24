@@ -1,9 +1,8 @@
 extends VBoxContainer
 
 
-# Signals
-signal sig_host_lan();
-signal sig_join_lan();
+# Constants
+const LAN_SERVERS_LIST_SCENE_FILEPATH: String = "res://scenes/gui/lan_servers_menu.tscn";
 
 
 # -------------------------------{ Godot functions }------------------------------
@@ -19,16 +18,17 @@ func _ready() -> void:
 
 # Activates when the host LAN button is pressed
 func _on_host_lan_button_pressed() -> void:
-	self.sig_host_lan.emit();
+	print("HOST TODO");#FIXME:DEL
+	# TODO
 
 
 # Activates when the join LAN button is pressed
 func _on_join_lan_button_pressed() -> void:
-	self.sig_join_lan.emit();
+	self.get_tree().change_scene_to_file(self.LAN_SERVERS_LIST_SCENE_FILEPATH);
 
 
 # Activates when the quit button is pressed
 func _on_quit_button_pressed() -> void:
-	get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST);
-	get_tree().quit();
+	self.get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST);
+	self.get_tree().quit();
 

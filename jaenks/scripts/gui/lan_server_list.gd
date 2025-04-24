@@ -1,6 +1,10 @@
 class_name LANServerListGD extends VBoxContainer
 
 
+# Signals
+signal sig_join(server_name: String, server_address: String);
+
+
 # Constants
 const LISTEN_MESSAGE: String = LobbyHostGD.BROADCAST_MESSAGE;
 const LISTEN_PORT: int = LobbyHostGD.BROADCAST_PORT;
@@ -32,11 +36,10 @@ func _ready() -> void:
 func find_servers() -> Array[Node]:
 	var server_entries: Array[Node] = [];
 
-	print("POLLING SERVER LIST");#FIXME:DEL
-	if self.peer.get_available_packet_count() > 0:
+	# Check through received packets
+	while self.peer.get_available_packet_count() > 0:
 		var packet_contents = self.peer.get_packet().get_string_from_ascii();
 		var packet_source_address = self.peer.get_packet_ip();
-		print("\nReceived message from %s:%d \"%s\"" % [packet_source_address, self.LISTEN_PORT, packet_contents]);#FIXME:DEL
 
 		# Packet is a LAN server broadcast; add it to the list of LAN servers
 		if packet_contents.begins_with(self.LISTEN_MESSAGE):
@@ -45,11 +48,11 @@ func find_servers() -> Array[Node]:
 			var server_name = server_details[1];
 			var server_player_count = server_details[2].to_int();
 			var server_max_players = server_details[3].to_int();
-			print("SERVER FOUND! \"%s\", %s, %d/%d" % [server_name, packet_source_address, server_player_count, server_max_players]);#FIXME:DEL
 
 			# Create server list entry
 			var server_entry = self.SERVER_LIST_ENTRY.instantiate();
 			(server_entry as ServerListEntryGD).set_server_details(server_name, packet_source_address, server_player_count, server_max_players);
+			server_entry.sig_join.connect(self._on_server_join_pressed);
 
 			# Add server to list
 			server_entries.push_back(server_entry);
@@ -76,4 +79,11 @@ func sort_server_entries(a: Node, b: Node) -> bool:
 	if server_a.get_server_name() < server_b.get_server_name() or (server_a.get_server_name() == server_b.get_server_name() and server_a.get_server_address() <= server_b.get_server_address()):
 		return true;
 	return false;
+
+
+# ------------------------------{ Signal functions }------------------------------
+
+# Activated when any server list entry join button is pressed
+func _on_server_join_pressed(server_name: String, server_address: String) -> void:
+	self.sig_join.emit(server_name, server_address);
 
