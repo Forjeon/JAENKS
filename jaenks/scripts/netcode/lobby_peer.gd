@@ -82,7 +82,7 @@ func connect_pending_peers() -> void:
 
 
 # Find the next smallest available peer ID
-func get_next_peer_id(peers: Array[int]) -> int:
+func get_next_peer_id(peers: Array) -> int:	# Expects peers to be Array[int]
 	var smallest_free_peer_id = self.HOST_PEER_ID
 	peers.sort();
 	for id in peers:
@@ -92,8 +92,20 @@ func get_next_peer_id(peers: Array[int]) -> int:
 	return smallest_free_peer_id;
 
 
+func get_peer_list() -> Array:	# True return type is Array[int], but Godot doesn't like that for some reason
+	var peers = Array(self.multiplayer.get_peers());
+	peers.push_back(self.peer_id);
+	peers.sort();
+	return peers;
+
+
 func get_player_count() -> int:
 	return self.multiplayer.get_peers().size() + 1;	# Magic number 1 makes sure to include local peer as one of the players in the lobby
+
+
+
+func has_pending_peers() -> bool:
+	return not self.pending_peers.is_empty();
 
 
 # Set up this peer as host

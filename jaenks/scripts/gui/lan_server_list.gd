@@ -39,7 +39,6 @@ func find_servers() -> Array[Node]:
 	# Check through received packets
 	while self.peer.get_available_packet_count() > 0:
 		var packet_contents = self.peer.get_packet().get_string_from_ascii();
-		var packet_source_address = self.peer.get_packet_ip();
 
 		# Packet is a LAN server broadcast; add it to the list of LAN servers
 		if packet_contents.begins_with(self.LISTEN_MESSAGE):
@@ -49,9 +48,11 @@ func find_servers() -> Array[Node]:
 			var server_player_count = server_details[2].to_int();
 			var server_max_players = server_details[3].to_int();
 
+			var server_address = self.peer.get_packet_ip();
+
 			# Create server list entry
 			var server_entry = self.SERVER_LIST_ENTRY.instantiate();
-			(server_entry as ServerListEntryGD).set_server_details(server_name, packet_source_address, server_player_count, server_max_players);
+			(server_entry as ServerListEntryGD).set_server_details(server_name, server_address, server_player_count, server_max_players);
 			server_entry.sig_join.connect(self._on_server_join_pressed);
 
 			# Add server to list

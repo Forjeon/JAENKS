@@ -2,7 +2,12 @@ extends VBoxContainer
 
 
 # Constants
+const GAME_SCENE_FILEPATH: String = "res://scenes/levels/testing01.tscn";
+const LOBBY_PEER_SCENE_FILEPATH: String = "res://scenes/lobby/lobby_peer.tscn";
 const TITLE_MENU_SCENE_FILEPATH: String = "res://scenes/gui/title_screen_menu.tscn";
+
+# Instance variables
+var handshake_peer: PacketPeerUDP;
 
 
 # -------------------------------{ Godot functions }------------------------------
@@ -25,6 +30,27 @@ func _on_back_button_pressed() -> void:
 
 # Activated when a server join button is pressed in the server list
 func _on_lan_server_list_join(server_name: String, server_address: String) -> void:
-	print("JOIN TODO");#FIXME:DEL
-	# TODO: instantiate the peer version of the game scene and plug in the server address
 	# TODO: in the future, server_name will be used to give a join loading screen such as "Joining <server_name>..." with a loading bar / processing indicator
+	# Perform handshake
+	self.handshake_peer = PacketPeerUDP.new();
+	self.handshake_peer.connect_to_host(server_address, LobbyHostGD.HANDSHAKE_PORT);
+	self.handshake_peer.put_packet(LobbyHostGD.HANDSHAKE_MESSAGE.to_utf8_buffer());
+	self.handshake_peer.wait();
+	var peers = self.handshake_peer.get_var() as Array[int];
+	if peers.is_empty():
+		# Handshake failed
+		print("JOIN HANDSHAKE DENIED");#FIXME:DEL
+		# TODO: handle somehow (show popup?)
+	else:
+		# Handshake succeeded; join game
+		#	Instantiate game scene
+		var game = load(self.GAME_SCENE_FILEPATH).instantiate();
+
+		# Set up lobby peer
+		var lobby_peer = load(self.LOBBY_PEER_SCENE_FILEPATH).instantiate();
+		(lobby_peer as LobbyPeerGD).set_as_peer(peers);
+		game.add_child(lobby_peer);
+
+		# Switch to game scene
+		self.get_tree().root.add_child(game);
+		self.get_tree().root.remove_child(self);
