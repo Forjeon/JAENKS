@@ -161,7 +161,7 @@ func transfer_player_uncrouch() -> void:
 # Activated when a peer has been approved to join the mesh hosted by this peer
 func _on_host_join_approved(address: String) -> void:
 	var id = self.get_next_peer_id(Array(self.multiplayer.get_peers()));
-	self.add_peer(id, address);
+	self.rpc("add_peer", id, address);
 
 
 # Activated when a peer connects to the mesh
@@ -199,3 +199,4 @@ func _on_player_rotated(player_rotation: Vector3) -> void:
 # Activated when the local player uncrouches
 func _on_player_uncrouch() -> void:
 	self.rpc("transfer_player_uncrouch");
+

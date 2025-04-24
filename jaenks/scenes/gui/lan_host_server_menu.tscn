@@ -34,7 +34,7 @@ text = "Max Players"
 layout_mode = 2
 min_value = 1.0
 max_value = 20.0
-value = 1.0
+value = 20.0
 
 [node name="Spacer" type="Control" parent="."]
 layout_mode = 2

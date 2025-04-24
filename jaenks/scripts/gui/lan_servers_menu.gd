@@ -6,9 +6,6 @@ const GAME_SCENE_FILEPATH: String = "res://scenes/levels/testing01.tscn";
 const LOBBY_PEER_SCENE_FILEPATH: String = "res://scenes/lobby/lobby_peer.tscn";
 const TITLE_MENU_SCENE_FILEPATH: String = "res://scenes/gui/title_screen_menu.tscn";
 
-# Instance variables
-var handshake_peer: PacketPeerUDP;
-
 
 # -------------------------------{ Godot functions }------------------------------
 
@@ -32,11 +29,20 @@ func _on_back_button_pressed() -> void:
 func _on_lan_server_list_join(server_name: String, server_address: String) -> void:
 	# TODO: in the future, server_name will be used to give a join loading screen such as "Joining <server_name>..." with a loading bar / processing indicator
 	# Perform handshake
-	self.handshake_peer = PacketPeerUDP.new();
-	self.handshake_peer.connect_to_host(server_address, LobbyHostGD.HANDSHAKE_PORT);
-	self.handshake_peer.put_packet(LobbyHostGD.HANDSHAKE_MESSAGE.to_utf8_buffer());
-	self.handshake_peer.wait();
-	var peers = self.handshake_peer.get_var() as Array[int];
+	print("DEBUG-A");#FIXME:DEL
+	var handshake_peer = PacketPeerUDP.new();
+	print("DEBUG-B");#FIXME:DEL
+	#self.handshake_peer.connect_to_host(server_address, LobbyHostGD.HANDSHAKE_PORT);
+	handshake_peer.bind(LobbyHostGD.HANDSHAKE_PORT, server_address);
+	print("DEBUG-B2");#FIXME:DEL
+	handshake_peer.set_dest_address(server_address, LobbyHostGD.HANDSHAKE_PORT);
+	print("DEBUG-C");#FIXME:DEL
+	handshake_peer.put_packet(LobbyHostGD.HANDSHAKE_MESSAGE.to_utf8_buffer());
+	print("DEBUG-D");#FIXME:DEL
+	handshake_peer.wait();	#FIXME:TODO: THIS WILL CRASH ANY PEER ATTEMPTING TO CONNECT TO A SERVER HOSTED ON THEIR SAME MACHINE (SAME ADDRESS AND PORT USED FOR BOTH ENDS OF HANDSHAKE = NO BUENO); MAKE THIS NOT CRASH IN THE FUTURE!!!
+	print("DEBUG-E");#FIXME:DEL
+	var peers = handshake_peer.get_var() as Array[int];
+	print("DEBUG-F");#FIXME:DEL
 	if peers.is_empty():
 		# Handshake failed
 		print("JOIN HANDSHAKE DENIED");#FIXME:DEL
