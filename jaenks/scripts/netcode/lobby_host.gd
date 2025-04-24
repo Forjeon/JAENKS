@@ -15,7 +15,7 @@ const BROADCAST_PORT: int = 25250;
 # Instance variables
 var broadcast_peer: PacketPeerUDP = PacketPeerUDP.new();
 var broadcast_timer: float = 0.0;
-var handshake_peer: PacketPeerUDP = PacketPeerUDP.new();
+var handshake_connection: ENetConnection = ENetConnection.new();
 var local_lobby_peer: LobbyPeerGD;
 var max_players: int;
 var server_name: String;
@@ -40,7 +40,7 @@ func _ready() -> void:
 	self.broadcast_peer.set_dest_address("255.255.255.255", self.BROADCAST_PORT);
 
 	# Set up handshake peer
-	self.handshake_peer.bind(self.HANDSHAKE_PORT, "*");
+	self.handshake_connection.create_host_bound("*", self.HANDSHAKE_PORT);
 
 
 # ------------------------------{ Custom functions }------------------------------
@@ -52,23 +52,28 @@ func broadcast_server() -> void:
 
 # Attempts the join handshake with the next join request peer
 func perform_handshake() -> void:
-	if self.handshake_peer.get_available_packet_count() > 0:
-		var packet_contents = self.handshake_peer.get_packet().get_string_from_ascii();
+	if not self.handshake_connection.get_peers().is_empty():
+		var handshake_peer = self.handshake_connection.get_peers().front();
 
-		# Packet is a join request; begin handshake
-		if packet_contents == self.HANDSHAKE_MESSAGE:
-			# Get handshake peer details
-			var peer_address = self.handshake_peer.get_packet_ip();
+		if handshake_peer.get_available_packet_count() > 0:
+			var packet_contents = handshake_peer.get_packet().get_string_from_ascii();
 
-			# Conclude handshake
-			self.handshake_peer.set_dest_address(peer_address, self.HANDSHAKE_PORT);
-			if self.local_lobby_peer.get_player_count() < self.max_players and not self.local_lobby_peer.has_pending_peers():
-				# Peer may join
-				self.handshake_peer.put_var(self.local_lobby_peer.get_peer_list());
-				self.sig_join_approved.emit(peer_address);
-			else:
-				# Peer may not join
-				self.handshake_peer.put_var([]);
+			# Packet is a join request; begin handshake
+			if packet_contents == self.HANDSHAKE_MESSAGE:
+				# Get handshake peer details
+				var peer_address = handshake_peer.get_packet_ip();
+
+				# Conclude handshake
+				print("HOST HANDSHAKING %s" % peer_address);#FIXME:DEL
+				handshake_peer.set_dest_address(peer_address, self.HANDSHAKE_PORT);
+				if self.local_lobby_peer.get_player_count() < self.max_players and not self.local_lobby_peer.has_pending_peers():
+					# Peer may join
+					handshake_peer.put_var(self.local_lobby_peer.get_peer_list());
+					self.handshake_connection.flush();
+					self.sig_join_approved.emit(peer_address);
+				else:
+					# Peer may not join
+					handshake_peer.put_var([]);
 
 
 # Sets up server details

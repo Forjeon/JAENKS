@@ -29,20 +29,15 @@ func _on_back_button_pressed() -> void:
 func _on_lan_server_list_join(server_name: String, server_address: String) -> void:
 	# TODO: in the future, server_name will be used to give a join loading screen such as "Joining <server_name>..." with a loading bar / processing indicator
 	# Perform handshake
-	print("DEBUG-A");#FIXME:DEL
-	var handshake_peer = PacketPeerUDP.new();
-	print("DEBUG-B");#FIXME:DEL
-	#self.handshake_peer.connect_to_host(server_address, LobbyHostGD.HANDSHAKE_PORT);
-	handshake_peer.bind(LobbyHostGD.HANDSHAKE_PORT, server_address);
-	print("DEBUG-B2");#FIXME:DEL
-	handshake_peer.set_dest_address(server_address, LobbyHostGD.HANDSHAKE_PORT);
-	print("DEBUG-C");#FIXME:DEL
+	print("PEER HANDSHAKING %s" % server_address);#FIXME:DEL
+	var handshake_connection = ENetConnection.new();
+	handshake_connection.create_host();
+	var handshake_peer = handshake_connection.connect_to_host(server_address, LobbyHostGD.HANDSHAKE_PORT);
 	handshake_peer.put_packet(LobbyHostGD.HANDSHAKE_MESSAGE.to_utf8_buffer());
-	print("DEBUG-D");#FIXME:DEL
-	handshake_peer.wait();	#FIXME:TODO: THIS WILL CRASH ANY PEER ATTEMPTING TO CONNECT TO A SERVER HOSTED ON THEIR SAME MACHINE (SAME ADDRESS AND PORT USED FOR BOTH ENDS OF HANDSHAKE = NO BUENO); MAKE THIS NOT CRASH IN THE FUTURE!!!
-	print("DEBUG-E");#FIXME:DEL
-	var peers = handshake_peer.get_var() as Array[int];
-	print("DEBUG-F");#FIXME:DEL
+	while handshake_peer.get_available_packet_count() == 0:
+		print("WAITING FOR HANDSHAKE");
+	var peers = handshake_peer.get_var();
+
 	if peers.is_empty():
 		# Handshake failed
 		print("JOIN HANDSHAKE DENIED");#FIXME:DEL

@@ -40,16 +40,6 @@ func _ready() -> void:
 
 # ------------------------------{ Custom functions }------------------------------
 
-# Adds a new peer to the mesh
-func add_peer(id: int, address: String) -> void:
-	var peer_connection = ENetConnection.new();
-	var port = self.BASE_PORT + self.peer_id;
-	peer_connection.create_host();
-	peer_connection.connect_to_host(address, port);
-	print("Connecting to peer %d at %s:%d" % [id, address, port]);
-	self.pending_peers[id] = peer_connection;
-
-
 # Creates the initial P2P mesh
 func create_mesh(peers: Array) -> void:
 	for id in peers:
@@ -131,6 +121,17 @@ func set_up_local_peer(id: int) -> void:
 
 
 # --------------------------------{ RPC functions }-------------------------------
+
+# Adds a new peer to the mesh
+@rpc("authority", "call_local", "reliable", 0)
+func add_peer(id: int, address: String) -> void:
+	var peer_connection = ENetConnection.new();
+	var port = self.BASE_PORT + self.peer_id;
+	peer_connection.create_host();
+	peer_connection.connect_to_host(address, port);
+	print("Connecting to peer %d at %s:%d" % [id, address, port]);
+	self.pending_peers[id] = peer_connection;
+
 
 # Updates peers to declare that the local player has crouched
 @rpc("any_peer", "call_remote", "reliable", 2)

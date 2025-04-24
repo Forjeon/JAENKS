@@ -8,7 +8,7 @@ More stuff here TODO
 ### Netcode
 
 #### RPC Channels
-- 0: UNASSIGNED
+- 0: mesh topology updates
 - 1: player transform updates
 - 2: player crouch updates
 
