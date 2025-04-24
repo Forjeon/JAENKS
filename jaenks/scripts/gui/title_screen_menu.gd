@@ -2,6 +2,7 @@ extends VBoxContainer
 
 
 # Constants
+const LAN_HOST_SERVER_SCENE_FILEPATH: String = "res://scenes/gui/lan_host_server_menu.tscn";
 const LAN_SERVERS_LIST_SCENE_FILEPATH: String = "res://scenes/gui/lan_servers_menu.tscn";
 
 
@@ -18,8 +19,7 @@ func _ready() -> void:
 
 # Activates when the host LAN button is pressed
 func _on_host_lan_button_pressed() -> void:
-	print("HOST TODO");#FIXME:DEL
-	# TODO
+	self.get_tree().change_scene_to_file(self.LAN_HOST_SERVER_SCENE_FILEPATH);
 
 
 # Activates when the join LAN button is pressed
