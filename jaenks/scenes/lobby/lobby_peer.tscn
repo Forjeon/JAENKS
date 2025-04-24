@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://b2hw1wjry1wd3"]
+
+[ext_resource type="Script" uid="uid://dp8ed74rwnq6x" path="res://scripts/netcode/lobby_peer.gd" id="1_mwuyx"]
+[ext_resource type="PackedScene" uid="uid://d1hc0wwrlgnw4" path="res://scenes/player/local_player.tscn" id="2_s4neu"]
+
+[node name="P2PMesh" type="Node"]
+script = ExtResource("1_mwuyx")
+
+[node name="LocalPlayer" parent="." instance=ExtResource("2_s4neu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)

@@ -1,8 +1,10 @@
-extends Node
+class_name LobbyPeerGD extends Node
+#FIXME:TODO:NOTE: MUST PERIODICALLY SYNC PEERS MESH PEER LISTS (HOST IS AUTHORITY)
 
 
 # Constants
 const BASE_PORT: int = LobbyHostGD.BROADCAST_PORT;
+const HOST_PEER_ID: int = 2;
 const PROXY_PLAYER_SCENE: PackedScene = preload("res://scenes/player/proxy_player.tscn");
 
 # Onready and export variables
@@ -11,8 +13,7 @@ const PROXY_PLAYER_SCENE: PackedScene = preload("res://scenes/player/proxy_playe
 # Instance variables
 var local_peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new();
 var pending_peers: Dictionary[int, ENetConnection] = {};
-var peer_id: int;
-var proxy_players: Dictionary[int, Node] = {};
+var peer_id: int; var proxy_players: Dictionary[int, Node] = {};
 
 
 # -------------------------------{ Godot functions }------------------------------
@@ -33,24 +34,8 @@ func _ready() -> void:
 	self.local_player.sig_rotated.connect(self._on_player_rotated);
 	self.local_player.sig_uncrouch.connect(self._on_player_uncrouch);
 
-	# Connect local lobby host signals
-	#FIXME:TODO: LOBBY HOST SHOULD ONLY EXIST IF THIS PEER IS HOST (WILL BE HANDLED BY MENU SCREEN SCRIPT; CURRENTLY BOTH HOST AND LISTENER ARE PRESENT BUT DISABLED BASED ON CLI ARGS)
-	$LobbyHost.sig_join_approved.connect(self._on_host_join_approved);
-
-	# Connect local listener signals
-	#FIXME:TODO: LISTENER SHOULD ONLY EXIST IF THIS PEER IS NOT HOST (WILL BE HANDLED BY MENU SCREEN SCRIPT; CURRENTLY BOTH HOST AND LISTENER ARE PRESENT BUT DISABLED BASED ON CLI ARGS)
-	$LanLobbyListener.sig_join_approved.connect(self._on_listener_join_approved);
-	
-	#FIXME:TODO: MOVE THIS TO OTHER SCRIPTS (LAN LISTENER, ONLINE SERVER SELECTOR, ETC.)
-	#var peers: Dictionary = {};
-
-	if OS.get_cmdline_args().is_empty():#FIXME:TODO: GET HOST IP FROM LAN LISTENER / ONLINE SERVER SELECTOR AND GUI STUFF
-		self.set_up_local_peer(2);
-		self.create_mesh([]);
-		#self.add_peer(3, "10.0.0.8");
-	else:
-		self.set_up_local_peer(3);
-		self.create_mesh([2]);
+	# Set local peer
+	self.multiplayer.set_multiplayer_peer(self.local_peer);
 
 
 # ------------------------------{ Custom functions }------------------------------
@@ -65,7 +50,7 @@ func add_peer(id: int, address: String) -> void:
 	self.pending_peers[id] = peer_connection;
 
 
-# Creates the peer-to-peer mesh
+# Creates the initial P2P mesh
 func create_mesh(peers: Array) -> void:
 	for id in peers:
 		var peer_connection = ENetConnection.new();
@@ -75,7 +60,7 @@ func create_mesh(peers: Array) -> void:
 		self.pending_peers[id] = peer_connection;
 
 
-#	Handle peers connecting
+# Finalize connection of initial peers to mesh
 func connect_pending_peers() -> void:
 	for id in self.pending_peers:
 		var peer_connection = self.pending_peers[id];
@@ -96,10 +81,41 @@ func connect_pending_peers() -> void:
 		self.local_peer.poll();
 
 
-func set_up_local_peer(peer_id: int) -> void:
-	self.peer_id = peer_id;
+# Find the next smallest available peer ID
+func get_next_peer_id(peers: Array[int]) -> int:
+	var smallest_free_peer_id = self.HOST_PEER_ID
+	peers.sort();
+	for id in peers:
+		if smallest_free_peer_id != id:
+			break;
+		smallest_free_peer_id += 1;
+	return smallest_free_peer_id;
+
+
+func get_player_count() -> int:
+	return self.multiplayer.get_peers().size() + 1;	# Magic number 1 makes sure to include local peer as one of the players in the lobby
+
+
+# Set up this peer as host
+func set_as_host(lobby_host: Node) -> void:
+	# Connect lobby host signals
+	lobby_host.sig_join_approved.connect(self._on_host_join_approved);
+
+	# Set up local peer
+	self.set_up_local_peer(self.HOST_PEER_ID);
+	self.create_mesh([]);
+
+
+# Set up this peer as non host
+func set_as_peer(peers: Array[int]) -> void:
+	self.set_up_local_peer(self.get_next_peer_id(peers));
+	self.create_mesh(peers);
+
+
+# Set up this peer
+func set_up_local_peer(id: int) -> void:
+	self.peer_id = id;
 	self.local_peer.create_mesh(self.peer_id);
-	self.multiplayer.set_multiplayer_peer(self.local_peer);
 
 
 # --------------------------------{ RPC functions }-------------------------------
@@ -132,13 +148,8 @@ func transfer_player_uncrouch() -> void:
 
 # Activated when a peer has been approved to join the mesh hosted by this peer
 func _on_host_join_approved(address: String) -> void:
-	var peer_id = 3;#FIXME: DETERMINE THIS BASED ON SMALLEST PEER ID > 2 WHICH IS NOT YET TAKEN
-	self.add_peer(peer_id, address);
-
-
-# Activated when this peer has been approved to join a mesh
-func _on_listener_join_approved(peers: Array) -> void:
-	self.create_mesh(peers);
+	var id = self.get_next_peer_id(Array(self.multiplayer.get_peers()));
+	self.add_peer(id, address);
 
 
 # Activated when a peer connects to the mesh

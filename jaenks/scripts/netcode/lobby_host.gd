@@ -1,4 +1,5 @@
 class_name LobbyHostGD extends Node
+#FIXME:TODO:NOTE: ONLY ACCEPT JOIN REQUESTS IF CURRENT PLAYER COUNT IS BELOW MAX
 
 
 # Signals
@@ -15,7 +16,9 @@ const BROADCAST_PORT: int = 25250;
 var broadcast_peer: PacketPeerUDP = PacketPeerUDP.new();
 var broadcast_timer: float = 0.0;
 var handshake_connection: ENetConnection = ENetConnection.new();
-var server_name: String = "JAENKS LAN Server";
+var local_peer: LobbyPeerGD;
+var max_players: int;
+var server_name: String;
 
 
 # -------------------------------{ Godot functions }------------------------------
@@ -38,11 +41,12 @@ func _ready() -> void:
 
 # Broadcasts LAN server and player count
 func broadcast_server() -> void:
-	var player_count = 1;	# TODO: get number of players currently connected
-	var max_players = 20;	# TODO: get max player count
-	broadcast_peer.put_packet(("%s;%s;%d;%d" % [self.BROADCAST_MESSAGE, self.server_name, player_count, max_players]).to_utf8_buffer());
+	broadcast_peer.put_packet(("%s;%s;%d;%d" % [self.BROADCAST_MESSAGE, self.server_name, self.local_peer.get_peer_count(), self.max_players]).to_utf8_buffer());
 
 
-func set_server_name(n: String) -> void:
+# Sets up server details
+func set_up_server(n: String, max_player_count: int, lobby_peer: LobbyPeerGD) -> void:
 	self.server_name = n;
+	self.max_players = max_player_count;
+	self.local_peer = lobby_peer;
 
