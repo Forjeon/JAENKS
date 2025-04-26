@@ -30,13 +30,18 @@ func _on_lan_server_list_join(server_name: String, server_address: String) -> vo
 	# TODO: in the future, server_name will be used to give a join loading screen such as "Joining <server_name>..." with a loading bar / processing indicator
 	# Perform handshake
 	print("PEER HANDSHAKING %s" % server_address);#FIXME:DEL
-	var handshake_peer = PacketPeerUDP.new();
-	handshake_peer.bind(LobbyHostGD.HANDSHAKE_PORT);	#FIXME:TODO: BIND TO SERVER ADDRESS AS WELL(?)
-	handshake_peer.set_dest_address(server_address, LobbyHostGD.HANDSHAKE_PORT);
-	handshake_peer.put_packet(LobbyHostGD.HANDSHAKE_MESSAGE.to_utf8_buffer());
-	print("PEER IS BOUND: %s" % handshake_peer.is_bound());#FIXME:DEL
-	print("PEER SOCKET CONNECTED: %s" % handshake_peer.is_socket_connected());#FIXME:DEL
-	#handshake_peer.wait();
+	#var handshake_peer = PacketPeerUDP.new();
+	#handshake_peer.bind(LobbyHostGD.HANDSHAKE_PORT);	#FIXME:TODO: BIND TO SERVER ADDRESS AS WELL(?)
+	#handshake_peer.set_dest_address(server_address, LobbyHostGD.HANDSHAKE_PORT);
+	#handshake_peer.put_packet(LobbyHostGD.HANDSHAKE_MESSAGE.to_utf8_buffer());
+	#print("PEER IS BOUND: %s" % handshake_peer.is_bound());#FIXME:DEL
+	#print("PEER SOCKET CONNECTED: %s" % handshake_peer.is_socket_connected());#FIXME:DEL
+	##handshake_peer.wait();
+	#var peers = handshake_peer.get_var();
+
+	var handshake_peer = StreamPeerTCP.new();
+	handshake_peer.connect_to_host(server_address, LobbyHostGD.HANDSHAKE_PORT);
+	handshake_peer.put_string(LobbyHostGD.HANDSHAKE_MESSAGE);
 	var peers = handshake_peer.get_var();
 	print("PEER GOT HANDSHAKE RESULT");#FIXME:DEL
 
