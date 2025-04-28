@@ -1,5 +1,4 @@
 class_name LobbyHostGD extends Node
-#FIXME:TODO:NOTE: ONLY ACCEPT JOIN REQUESTS IF CURRENT PLAYER COUNT IS BELOW MAX
 
 
 # Signals
@@ -54,8 +53,19 @@ func broadcast_server() -> void:
 
 # Attempts the join handshake with the next join request peer
 func perform_handshake() -> void:
+	# Check for pending handshakes
 	if self.handshake_server.is_connection_available():
 		var handshake_peer = self.handshake_server.take_connection();
+		handshake_peer.set_no_delay(true);
+		handshake_peer.poll();
+
+		# Wait for connection to be established
+		while not (handshake_peer.get_status() == StreamPeerTCP.Status.STATUS_CONNECTED or handshake_peer.get_status() == StreamPeerTCP.Status.STATUS_ERROR):
+			await self.get_tree().create_timer(0.1).timeout;
+			handshake_peer.poll();
+
+		if handshake_peer.get_status() == StreamPeerTCP.Status.STATUS_ERROR:
+			return;
 		
 		# Packet is a join request; begin handshake
 		if handshake_peer.get_string() == self.HANDSHAKE_MESSAGE:
@@ -66,26 +76,6 @@ func perform_handshake() -> void:
 			else:
 				# Peer may not join
 				handshake_peer.put_var(Array());
-	#if self.handshake_peer.get_available_packet_count() > 0:
-		#var packet_contents = self.handshake_peer.get_packet().get_string_from_ascii();
-
-		# Packet is a join request; begin handshake
-		#if packet_contents == self.HANDSHAKE_MESSAGE:
-			# Get handshake peer details
-			#var peer_address = self.handshake_peer.get_packet_ip();
-			#print("HOST BEGIN HANDHSAKE: %s" % peer_address);
-
-			# Conclude handshake
-			#self.handshake_peer.set_dest_address(peer_address, self.HANDSHAKE_PORT);
-			#if self.local_lobby_peer.get_player_count() < self.max_players and not self.local_lobby_peer.has_pending_peers():
-				# Peer may join
-				#self.handshake_peer.put_var(self.local_lobby_peer.get_peer_list());
-				#self.sig_join_approved.emit(peer_address);
-				#print("HOST APPROVED HANDSHAKE");#FIXME:DEL
-			#else:
-				# Peer may not join
-				#self.handshake_peer.put_var(Array());
-				#print("HOST DENIED HANDSHAKE");#FIXME:DEL
 
 
 # Sets up server details

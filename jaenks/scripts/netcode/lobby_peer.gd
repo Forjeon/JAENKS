@@ -109,7 +109,7 @@ func set_as_host(lobby_host: Node) -> void:
 
 
 # Set up this peer as non host
-func set_as_peer(peers: Array[int]) -> void:
+func set_as_peer(peers: Array) -> void:
 	self.set_up_local_peer(self.get_next_peer_id(peers));
 	self.create_mesh(peers);
 
@@ -200,4 +200,3 @@ func _on_player_rotated(player_rotation: Vector3) -> void:
 # Activated when the local player uncrouches
 func _on_player_uncrouch() -> void:
 	self.rpc("transfer_player_uncrouch");
-

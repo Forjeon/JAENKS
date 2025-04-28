@@ -52,4 +52,3 @@ func set_server_details(n: String, address: String, players: int, max_players: i
 # Activated when the join button is pressed
 func _on_join_button_pressed() -> void:
 	self.sig_join.emit(self.get_server_name(), self.get_server_address());
-
