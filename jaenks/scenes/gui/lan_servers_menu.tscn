@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3ey1q58gol5f"]
+
+[ext_resource type="Script" uid="uid://c2udifu0ws7a3" path="res://scripts/gui/lan_server_list.gd" id="1_ffb8f"]
+[ext_resource type="Script" uid="uid://pvje2v8w0q08" path="res://scripts/gui/lan_servers_menu.gd" id="1_gbqfj"]
+
+[node name="LANServersMenu" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gbqfj")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "LAN Servers"
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_top = 20
+
+[node name="LANServerList" type="VBoxContainer" parent="ScrollContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_ffb8f")
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 2
+text = "Back"

@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3 uid="uid://cr28xgu3frgta"]
+
+[ext_resource type="Script" uid="uid://c7puplso7rx1" path="res://scripts/gui/server_list_entry.gd" id="1_p8q68"]
+
+[node name="ServerListEntry" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_bottom = 5
+script = ExtResource("1_p8q68")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ServerName" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "NAME"
+horizontal_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="ServerAddress" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ADDRESS"
+horizontal_alignment = 1
+
+[node name="VSeparator2" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="ServerPlayerCount" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PLAYERS/MAX"
+horizontal_alignment = 1
+
+[node name="VSeparator3" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="JoinButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Join"

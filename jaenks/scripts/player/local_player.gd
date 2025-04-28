@@ -1,20 +1,29 @@
 extends RigidBody3D
 
 
+# Signals
+signal sig_crouch;
+signal sig_positioned(new_position: Vector3);
+signal sig_rotated(new_rotation: Vector3);
+signal sig_uncrouch;
+
+
 # Constants
 #	Force
-const AIRBORNE_MOVE_FORCE_MULT = 0.025;
+const AIRBORNE_MOVE_FORCE_MULT = 0.05;
 const GROUNDED_MOVE_FORCE = 1500.0;
-const VERTICAL_MOVE_FORCE_MULT = 0.4;
+const VERTICAL_MOVE_FORCE_MULT = 0.8;
 #	Speed
 const AIRBORNE_SPEED_MAX = 30.0;
 const CROUCH_SPEED_MULT = 0.5;
-const JUMP_SPEED = 5.0;
+const JUMP_SPEED = 2.0;
 const SPRINT_SPEED_MULT = 2.0;
 const WALK_SPEED_MAX = 5.0;
 #	Misc
 const COYOTE_TIME_MAX = 0.2;
 const LOOK_SENSITIVITY = 0.005;
+#	Network synchronization
+const TRANSFORM_SYNC_THRESHOLD = 0.01;
 
 # Onready and export variables
 @onready var collision: CollisionShape3D = $CollisionShape3D;
@@ -37,6 +46,9 @@ var do_direct_movement = true;
 var do_movement_damping = true;
 var do_try_uncrouch = false;
 var target_view_rotation = Vector2();
+#	Network synchronization
+var old_position = Vector3();
+var old_rotation = Vector3();
 
 
 # -------------------------------{ Godot functions }------------------------------
@@ -86,6 +98,21 @@ func _physics_process(delta: float) -> void:
 	# Damping
 	if self.do_movement_damping:
 		self.process_damping(delta);
+
+
+# _process function
+func _process(delta: float) -> void:
+	# Synchronize position
+	var new_position = self.get_position();
+	if absf((new_position - self.old_position).length()) > self.TRANSFORM_SYNC_THRESHOLD:
+		self.sig_positioned.emit(new_position);
+		self.old_position = new_position;
+
+	# Synchronize rotation
+	var new_rotation = self.get_rotation();
+	if absf((new_rotation - self.old_rotation).length()) > self.TRANSFORM_SYNC_THRESHOLD:
+		self.sig_rotated.emit(new_rotation);
+		self.old_rotation = new_rotation;
 
 
 # _ready function
@@ -138,7 +165,7 @@ func get_target_move_speed() -> float:
 # Apply linear damping force based on current linear velocity and state
 func process_damping(delta: float) -> void:
 	var damping_force = Vector3();
-	var linear_vel = self.linear_velocity;
+	var linear_vel = self.get_linear_velocity();
 	var linear_speed = linear_vel.length();
 
 	# Grounded damping
@@ -193,6 +220,9 @@ func set_target_view_rotation(screen_relative_vec: Vector2) -> void:
 # Enter crouching state
 func try_crouch() -> void:
 	if self.is_crouching == false:
+		# Synchronize crouch
+		self.sig_crouch.emit();
+
 		# Set crouching state
 		self.is_crouching = true;
 
@@ -218,6 +248,9 @@ func try_jump() -> void:
 # Exit crouching state
 func try_uncrouch() -> void:
 	if self.can_uncrouch:
+		# Synchronize uncrouch
+		self.sig_uncrouch.emit();
+
 		# Reset crouching state
 		self.is_crouching = false;
 		self.do_try_uncrouch = false;

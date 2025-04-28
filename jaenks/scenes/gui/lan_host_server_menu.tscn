@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://bfvtnv1prtjrv"]
+
+[ext_resource type="Script" uid="uid://ba3utsyb80bq4" path="res://scripts/gui/lan_host_server_menu.gd" id="1_xxjxy"]
+
+[node name="LANHostServerMenu" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xxjxy")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Host LAN Server"
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 2
+text = "Server Name"
+
+[node name="ServerNameField" type="LineEdit" parent="."]
+layout_mode = 2
+text = "JAENKS LAN Server"
+
+[node name="Label3" type="Label" parent="."]
+layout_mode = 2
+text = "Max Players"
+
+[node name="MaxPlayersField" type="SpinBox" parent="."]
+layout_mode = 2
+min_value = 1.0
+max_value = 20.0
+value = 20.0
+
+[node name="Spacer" type="Control" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HostButton" type="Button" parent="."]
+layout_mode = 2
+text = "Host Server"
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 2
+text = "Back"

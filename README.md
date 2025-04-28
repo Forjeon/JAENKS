@@ -8,8 +8,9 @@ More stuff here TODO
 ### Netcode
 
 #### RPC Channels
-- 0: UNASSIGNED
+- 0: mesh topology updates
 - 1: player transform updates
+- 2: player crouch updates
 
 ## Platforms Progress
 - [x] Linux
@@ -25,6 +26,8 @@ More stuff here TODO
 Art style is low poly and mix of 3D and 2D assets and VFX.
 
 Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
+
+Use the phrase "this is a piece of jank" somewhere.
 
 ## Game Mechanics Progress
 
@@ -53,6 +56,10 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 - [ ] Momentum-based impact damage (players)
 
 ### Enemies
+- [ ] Crawling enemies
+	- f
+- [ ] Flying enemies
+	- f
 - [ ] Giant mechs and robots
 	- [ ] AI
 		- [ ] Combat
@@ -61,10 +68,7 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 		- [ ] Searching
 	- [ ] Stealable parts
 	- [ ] Weak points (not reachable from ground)
-- [ ] Flying enemies
-	- f
-- [ ] Crawling enemies
-	- f
+- [ ] Stationary enemies (more dangerous and tanky)
 - [ ] Walking enemies
 	- f
 
@@ -114,6 +118,7 @@ Comedy (e.g., NPC dialog, abilities and items, ragdoll physics, etc.).
 	- [ ] Lose state: home base destroyed or all players dead
 	- [ ] Procedural terrain generation
 		- [ ] Path shape and length
+			- [ ] Branching paths (use Hamiltonian path through all nodes for ship to take, or use A* to only take the shortest path)
 		- [ ] Prop types
 			- [ ] Abandoned settlements
 			- [ ] Ancient ruins

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dbyj08nexxf1s"]
+
+[ext_resource type="Script" uid="uid://cpw6nr142c8mc" path="res://scripts/netcode/lobby_host.gd" id="1_pxslo"]
+
+[node name="LobbyHost" type="Node"]
+script = ExtResource("1_pxslo")

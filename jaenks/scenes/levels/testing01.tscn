@@ -1,13 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://6o0lkjmhj1tb"]
+[gd_scene load_steps=13 format=3 uid="uid://6o0lkjmhj1tb"]
 
-[ext_resource type="Script" uid="uid://dp8ed74rwnq6x" path="res://scripts/netcode/p2p_mesh.gd" id="1_lbhrr"]
-[ext_resource type="PackedScene" uid="uid://d1hc0wwrlgnw4" path="res://scenes/player/local_player.tscn" id="2_lnu2h"]
-[ext_resource type="Texture2D" uid="uid://duywgtrr3gqev" path="res://assets/dev_art/JAENKS_unit_grid_green.png" id="2_yqjtg"]
-[ext_resource type="Texture2D" uid="uid://rekcvfksb5c" path="res://icon.svg" id="3_lbhrr"]
-[ext_resource type="Texture2D" uid="uid://3g3qe0qdu8wp" path="res://assets/dev_art/JAENKS_unit_grid_orange.png" id="5_iywne"]
+[ext_resource type="Texture2D" uid="uid://c338lfby4m1cs" path="res://assets/dev_art/Sky_box.png" id="1_b3gnu"]
+[ext_resource type="Texture2D" uid="uid://duywgtrr3gqev" path="res://assets/dev_art/JAENKS_unit_grid_green.png" id="2_lnq0u"]
+[ext_resource type="Texture2D" uid="uid://3g3qe0qdu8wp" path="res://assets/dev_art/JAENKS_unit_grid_orange.png" id="3_hvs51"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_iywne"]
-panorama = ExtResource("3_lbhrr")
+panorama = ExtResource("1_b3gnu")
 
 [sub_resource type="Sky" id="Sky_p57ef"]
 sky_material = SubResource("PanoramaSkyMaterial_iywne")
@@ -23,27 +21,27 @@ size = Vector3(20, 1, 20)
 size = Vector3(20, 1, 20)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lnu2h"]
-albedo_texture = ExtResource("2_yqjtg")
+albedo_texture = ExtResource("2_lnq0u")
 uv1_scale = Vector3(60, 40, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lbhrr"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lbhrr"]
-albedo_texture = ExtResource("5_iywne")
+albedo_texture = ExtResource("3_hvs51")
 uv1_scale = Vector3(3, 2, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_iywne"]
 material = SubResource("StandardMaterial3D_lbhrr")
 
-[node name="Game" type="Node3D"]
-
-[node name="P2PMesh" type="Node3D" parent="."]
-script = ExtResource("1_lbhrr")
-
-[node name="LocalPlayer" parent="P2PMesh" instance=ExtResource("2_lnu2h")]
+[node name="Testing01" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_lnu2h")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(0.826033, -0.154976, 0.541896, -0.398365, 0.519615, 0.755847, -0.398716, -0.840228, 0.367482, 0, 0, 0)
+shadow_enabled = true
+shadow_opacity = 0.8
 
 [node name="TempTestFloor" type="StaticBody3D" parent="WorldEnvironment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
@@ -74,12 +72,6 @@ shape = SubResource("BoxShape3D_uwrxv")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment/TempTestFloor3"]
 mesh = SubResource("BoxMesh_uwrxv")
 surface_material_override/0 = SubResource("StandardMaterial3D_lnu2h")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(0.826033, -0.154976, 0.541896, -0.398365, 0.519615, 0.755847, -0.398716, -0.840228, 0.367483, 0, 0, 0)
-light_energy = 2.0
-shadow_enabled = true
-shadow_opacity = 0.8
 
 [node name="TempTestWall" type="StaticBody3D" parent="WorldEnvironment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.88641, 0.5, -3.45539)
