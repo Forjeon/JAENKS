@@ -64,4 +64,3 @@ func _on_lan_server_list_join(server_name: String, server_address: String) -> vo
 		# Switch to game scene
 		self.get_tree().root.add_child(game);
 		self.get_tree().root.remove_child(self);
-

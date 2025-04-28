@@ -1,10 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2hw1wjry1wd3"]
+[gd_scene load_steps=4 format=3 uid="uid://b2hw1wjry1wd3"]
 
 [ext_resource type="Script" uid="uid://dp8ed74rwnq6x" path="res://scripts/netcode/lobby_peer.gd" id="1_mwuyx"]
 [ext_resource type="PackedScene" uid="uid://d1hc0wwrlgnw4" path="res://scenes/player/local_player.tscn" id="2_s4neu"]
+[ext_resource type="PackedScene" uid="uid://bs6munsy40apt" path="res://scenes/gui/in_game_menu.tscn" id="3_s4neu"]
 
 [node name="P2PMesh" type="Node"]
 script = ExtResource("1_mwuyx")
 
 [node name="LocalPlayer" parent="." instance=ExtResource("2_s4neu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+
+[node name="InGameMenu" parent="." instance=ExtResource("3_s4neu")]

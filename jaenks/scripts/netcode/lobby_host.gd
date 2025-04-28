@@ -14,7 +14,6 @@ const BROADCAST_PORT: int = 25250;
 # Instance variables
 var broadcast_peer: PacketPeerUDP = PacketPeerUDP.new();
 var broadcast_timer: float = 0.0;
-#var handshake_peer: PacketPeerUDP = PacketPeerUDP.new();
 var handshake_server: TCPServer = TCPServer.new();
 var local_lobby_peer: LobbyPeerGD;
 var max_players: int;
@@ -40,7 +39,6 @@ func _ready() -> void:
 	self.broadcast_peer.set_dest_address("255.255.255.255", self.BROADCAST_PORT);
 
 	# Set up handshake peer
-	#self.handshake_peer.bind(self.HANDSHAKE_PORT, "*");
 	self.handshake_server.listen(self.HANDSHAKE_PORT);
 
 
@@ -83,4 +81,3 @@ func set_up_server(n: String, max_player_count: int, lobby_peer: LobbyPeerGD) ->
 	self.server_name = n;
 	self.max_players = max_player_count;
 	self.local_lobby_peer = lobby_peer;
-
